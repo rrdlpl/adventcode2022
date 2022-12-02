@@ -1,7 +1,7 @@
 file = open('day2/input.txt', 'r')
 lines = file.readlines()
 
-myPoints = {
+points = {
     'Y': 2,  # paper
     'X': 1,  # rock
     'Z': 3  # scissors
@@ -35,11 +35,11 @@ for line in lines:
     me = me.strip()
     print('me', myMap[me], enemyMap[enemy])
     if myMap[me] == enemyMap[enemy]:
-        score += 3 + myPoints[me]
+        score += 3 + points[me]
     elif (myMap[me] == 'paper' and enemyMap[enemy] == 'rock') or (myMap[me] == 'rock' and enemyMap[enemy] == 'scissors') or (myMap[me] == 'scissors' and enemyMap[enemy] == 'paper'):
-        score += 6 + myPoints[me]
+        score += 6 + points[me]
     else:
-        score += myPoints[me]
+        score += points[me]
 
 print(w, l, t)
 print(score)
