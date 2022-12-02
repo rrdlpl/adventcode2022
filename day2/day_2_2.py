@@ -1,13 +1,13 @@
 file = open('day2/input.txt', 'r')
 lines = file.readlines()
 
-myPoints = {
+points = {
     'rock': 1,  # rock
     'paper': 2,  # paper
     'scissors': 3  # scissors
 }
 
-myAction = {
+actions = {
     'X': 'lose',
     'Y': 'draw',
     'Z': 'win',
@@ -19,13 +19,13 @@ enemyMap = {
     'C': 'scissors'
 }
 
-loseMap = {
+lose = {
     'rock': 'scissors',
     'scissors': 'paper',
     'paper': 'rock'
 }
 
-winMap = {
+win = {
     'paper': 'scissors',
     'rock': 'paper',
     'scissors': 'rock'
@@ -43,16 +43,16 @@ for line in lines:
     enemy = enemy.strip()
     action = action.strip()
 
-    if myAction[action] == 'draw':
-        score += 3 + myPoints[enemyMap[enemy]]
-    elif myAction[action] == 'lose':
+    if actions[action] == 'draw':
+        score += 3 + points[enemyMap[enemy]]
+    elif actions[action] == 'lose':
        # print('enemy picked', enemyMap[enemy])
        # print('need to choose to lose', loseMap[enemyMap[enemy]])
-        score += myPoints[loseMap[enemyMap[enemy]]]
+        score += points[lose[enemyMap[enemy]]]
     else:
        # print('enemy picked', enemyMap[enemy])
        # print('need to choose to win', winMap[enemyMap[enemy]])
-        score += 6 + myPoints[winMap[enemyMap[enemy]]]
+        score += 6 + points[win[enemyMap[enemy]]]
 
 
 print(score)
