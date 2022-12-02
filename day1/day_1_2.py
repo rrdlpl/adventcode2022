@@ -17,8 +17,8 @@ for elf in elvesLines:
         continue
     sum += int(elf.strip())
 
-top1 = abs(heapq.heappop(weights))
-top2 = abs(heapq.heappop(weights))
-top3 = abs(heapq.heappop(weights))
+top1 = heapq.heappop(weights)
+top2 = heapq.heappop(weights)
+top3 = heapq.heappop(weights)
 
 print(top1 + top2 + top3)
