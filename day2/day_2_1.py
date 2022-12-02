@@ -10,7 +10,6 @@ points = {
 myMap = {
     'X': 'rock',
     'Y': 'paper',
-
     'Z': 'scissors'
 }
 
