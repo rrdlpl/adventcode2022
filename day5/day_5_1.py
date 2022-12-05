@@ -10,15 +10,17 @@ lines = file.readlines()
 
 result = 0
 
-stacks = [deque(['B', 'L', 'D', 'T', 'W', 'C', 'F', 'M']),
-          deque(['N', 'B', 'L']),
-          deque(['J', 'C', 'H', 'T', 'L', 'V']),
-          deque(['S', 'P', 'J', 'W']),
-          deque(['Z', 'S', 'C', 'F', 'T', 'L', 'R']),
-          deque(['W', 'D', 'G', 'B', 'H', 'N', 'Z']),
-          deque(['F', 'M', 'S', 'P', 'V', 'G', 'C', 'N']),
-          deque(['W', 'Q', 'R', 'J', 'F', 'V', 'C', 'Z']),
-          deque(['R', 'P', 'M', 'L', 'H'])]
+stacks = [
+    deque(['B', 'L', 'D', 'T', 'W', 'C', 'F', 'M']),
+    deque(['N', 'B', 'L']),
+    deque(['J', 'C', 'H', 'T', 'L', 'V']),
+    deque(['S', 'P', 'J', 'W']),
+    deque(['Z', 'S', 'C', 'F', 'T', 'L', 'R']),
+    deque(['W', 'D', 'G', 'B', 'H', 'N', 'Z']),
+    deque(['F', 'M', 'S', 'P', 'V', 'G', 'C', 'N']),
+    deque(['W', 'Q', 'R', 'J', 'F', 'V', 'C', 'Z']),
+    deque(['R', 'P', 'M', 'L', 'H'])
+]
 
 for line in lines:
 
