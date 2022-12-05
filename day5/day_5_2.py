@@ -23,9 +23,9 @@ stacks = [deque(['B', 'L', 'D', 'T', 'W', 'C', 'F', 'M']),
 for line in lines:
 
     instruction = [int(s) for s in re.findall(r'\b\d+\b', line)]
-    move = int(instruction[0])
-    fr = int(instruction[1]) - 1
-    to = int(instruction[2]) - 1
+    move = instruction[0]
+    fr = instruction[1] - 1
+    to = instruction[2] - 1
 
     temp = []
     for i in range(move):
