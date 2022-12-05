@@ -19,13 +19,7 @@ enemyMap = {
     'C': 'scissors'
 }
 
-# A  rock
-# B  paper
-# C  scissors
 score = 0
-w = 0
-l = 0
-t = 0
 for line in lines:
     game = line.split()
     enemy, me = game
@@ -38,5 +32,4 @@ for line in lines:
 
     score += points[me]
 
-print(w, l, t)
 print(score)
