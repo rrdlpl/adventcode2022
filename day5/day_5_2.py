@@ -32,8 +32,8 @@ for line in lines:
     for p in temp[::-1]:
         stacks[to].append(p)
 
-result = []
-for stack in stacks:
-    result.append(stack.pop())
+result = ''.join([stack.pop() for stack in stacks])
 
-print(''.join(result))
+print(result)
+
+file.close()
