@@ -3,12 +3,8 @@
 from collections import deque
 import re
 
-
 file = open('day5/input.txt', 'r')
 lines = file.readlines()
-
-
-result = 0
 
 stacks = [
     deque(['B', 'L', 'D', 'T', 'W', 'C', 'F', 'M']),
@@ -23,7 +19,6 @@ stacks = [
 ]
 
 for line in lines:
-
     instruction = [int(s) for s in re.findall(r'\b\d+\b', line)]
     move = instruction[0]
     fr = instruction[1] - 1
@@ -35,7 +30,6 @@ for line in lines:
 
 result = []
 for stack in stacks:
-
     result.append(stack.pop())
 
 print(''.join(result))
