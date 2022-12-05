@@ -20,10 +20,9 @@ stacks = [
 ]
 
 for line in lines:
-    instruction = [int(s) for s in re.findall(r'\b\d+\b', line)]
-    move = instruction[0]
-    fr = instruction[1] - 1
-    to = instruction[2] - 1
+    move, fr, to = [int(s) for s in re.findall(r'\b\d+\b', line)]
+    fr -= 1
+    to -= 1
 
     temp = []
     for i in range(move):
