@@ -27,8 +27,8 @@ for line in lines:
         p = stacks[fr].pop()
         stacks[to].append(p)
 
-result = []
-for stack in stacks:
-    result.append(stack.pop())
+result = ''.join([stack.pop() for stack in stacks])
 
 print(''.join(result))
+
+file.close()
