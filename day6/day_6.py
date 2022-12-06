@@ -2,7 +2,7 @@ file = open('day6/input.txt', 'r')
 line = file.readlines()[0]
 
 
-def start_of(line, size) -> int:
+def start_of(line: str, size: int) -> int:
     for i in range(0, len(line) - size):
         s = set(line[i:(i + size)])
         if len(s) == size:
