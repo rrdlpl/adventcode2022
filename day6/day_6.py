@@ -3,8 +3,8 @@ line = file.readlines()[0]
 
 
 def start_of(line, size) -> int:
-    for i in range(1, len(line)):
-        s = set(line[i:(i+size)])
+    for i in range(0, len(line) - size):
+        s = set(line[i:(i + size)])
         if len(s) == size:
             return i + size
     return -1
