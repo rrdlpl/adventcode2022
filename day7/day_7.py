@@ -1,9 +1,6 @@
 from collections import deque
 import math
 
-file = open('day7/input.txt', 'r')
-lines = file.readlines()
-
 
 class File:
     def __init__(self, name: str, size: int):
@@ -34,9 +31,11 @@ class Folder:
 
 
 class Solution:
-    def build_tree(self, lines: str):
+    def build_tree(self):
         root = Folder('/', None)
         current_folder = root
+        file = open('day7/input.txt', 'r')
+        lines = file.readlines()
         for i in range(1, len(lines)):
             input = lines[i].strip().split()
             if input[0] == '$' and input[1] == 'ls':
@@ -50,6 +49,8 @@ class Solution:
                 current_folder.add_folder(Folder(input[1], current_folder))
             else:
                 current_folder.add_file(File(input[1], int(input[0])))
+
+        file.close()
 
         return root
 
@@ -84,7 +85,7 @@ class Solution:
         return folder
 
     def main(self):
-        root = self.build_tree(lines)
+        root = self.build_tree()
         print('Solution 1, folder size <= 100000 ',
               self.get_sum_directories(root, 100000))
         delete = self.directory_to_delete(root, 70000000, 30000000)
@@ -92,5 +93,3 @@ class Solution:
 
 
 Solution().main()
-
-file.close()
