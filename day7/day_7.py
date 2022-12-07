@@ -1,19 +1,18 @@
 from collections import deque
 import math
 
-
 file = open('day7/input.txt', 'r')
 lines = file.readlines()
 
 
 class File:
-    def __init__(self, name, size):
+    def __init__(self, name: str, size: int):
         self.name = name
         self.size = size
 
 
 class Folder:
-    def __init__(self, name, parent=None):
+    def __init__(self, name: str, parent=None):
         self.name = name
         self.folders = {}
         self.files = []
@@ -34,7 +33,7 @@ class Folder:
         return sum + self.files_size
 
 
-def build_tree(lines):
+def build_tree(lines: str):
     root = Folder('/', None)
     current_folder = root
     for i in range(1, len(lines)):
@@ -54,22 +53,22 @@ def build_tree(lines):
     return root
 
 
-def get_sum_directories(root):
+def get_sum_directories(root: Folder, max_size: int) -> int:
     queue = deque()
     sum = 0
     queue.append(root)
     while len(queue) > 0:
         top = queue.pop()
-        if top.get_folder_size() < 100000:
+        if top.get_folder_size() < max_size:
             sum += top.get_folder_size()
         for key in top.folders:
             queue.append(top.folders[key])
     return sum
 
 
-def directory_to_delete(root):
+def directory_to_delete(root: Folder, hd_size: int, update_size: int) -> Folder:
     queue = deque()
-    space_required = 30000000 - (70000000 - root.get_folder_size())
+    space_required = update_size - (hd_size - root.get_folder_size())
 
     queue.append(root)
     minimum = math.inf
@@ -83,13 +82,12 @@ def directory_to_delete(root):
                 folder = top
         for key in top.folders:
             queue.append(top.folders[key])
-
     return folder
 
 
 root = build_tree(lines)
-print('folder size <= 100000 ', get_sum_directories(root))
-delete = directory_to_delete(root)
+print('Solution 1, folder size <= 100000 ', get_sum_directories(root, 100000))
+delete = directory_to_delete(root, 70000000, 30000000)
 
 print('Solution 2', delete.name, delete.get_folder_size())
 file.close()
