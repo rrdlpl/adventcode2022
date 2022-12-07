@@ -31,10 +31,10 @@ class Folder:
 
 
 class Solution:
-    def build_tree(self):
+    def build_tree(self, path: str):
         root = Folder('/', None)
         current_folder = root
-        file = open('day7/input.txt', 'r')
+        file = open(path, 'r')
         lines = file.readlines()
         for i in range(1, len(lines)):
             input = lines[i].strip().split()
@@ -84,12 +84,12 @@ class Solution:
                 queue.append(top.folders[key])
         return folder
 
-    def main(self):
-        root = self.build_tree()
+    def main(self, path: str):
+        root = self.build_tree(path)
         print('Solution 1, folder size <= 100000 ',
               self.get_sum_directories(root, 100000))
         delete = self.directory_to_delete(root, 70000000, 30000000)
         print('Solution 2', delete.name, delete.get_folder_size())
 
 
-Solution().main()
+Solution().main('day7/input.txt')
