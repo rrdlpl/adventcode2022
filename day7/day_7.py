@@ -70,22 +70,26 @@ def get_sum_directories(root):
 def directory_to_delete(root):
     queue = deque()
     space_required = 30000000 - (70000000 - root.get_folder_size())
-    sizes = []
 
     queue.append(root)
+    minimum = math.inf
+    folder = None
+
     while len(queue) > 0:
         top = queue.pop()
         if top.get_folder_size() >= space_required:
-            sizes.append(top.get_folder_size())
+            if top.get_folder_size() <= minimum:
+                minimum = top.get_folder_size()
+                folder = top
         for key in top.folders:
             queue.append(top.folders[key])
 
-    return sorted(sizes)
+    return folder
 
 
 root = build_tree(lines)
 print('folder size <= 100000 ', get_sum_directories(root))
 delete = directory_to_delete(root)
 
-print('Solution 2', delete)
+print('Solution 2', delete.name, delete.get_folder_size())
 file.close()
