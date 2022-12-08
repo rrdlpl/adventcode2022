@@ -1,6 +1,5 @@
 import time
 
-
 file = open('day8/input.txt', 'r')
 lines = file.readlines()
 
@@ -18,9 +17,8 @@ def build_matrix(lines):
 def count_visible_trees(matrix):
     m = len(matrix)
     n = len(matrix[0])
-    print('M x N', m, n)
     visited = set()
-    count = 0
+
     for i in range(1, m - 1):
         max_visible_height_top = matrix[0][i]
         max_visible_height_left = matrix[i][0]
@@ -41,12 +39,12 @@ def count_visible_trees(matrix):
             if matrix[j][i] > max_visible_height_top:
                 coord = (j, i)
                 max_visible_height_top = matrix[j][i]
-                count += 1
+
                 visited.add(coord)
 
             if matrix[i][j] > max_visible_height_left:
                 coord = (i, j)
-                count += 1
+
                 max_visible_height_left = matrix[i][j]
                 visited.add(coord)
 
@@ -60,11 +58,9 @@ def scenic_score(matrix):
     def can_move(row, col):
         return row >= 0 and col >= 0 and row < m and col < n
 
-    def get_score(row, col):
-
+    def get_score(row, col) -> int:
         directions = [(1, 0), (0, 1), (-1, 0), (0, -1)]
         score = 1
-
         for direction in directions:
             counter = 0
             next_row = row
@@ -83,24 +79,18 @@ def scenic_score(matrix):
             score *= counter
         return score
 
-    def calc():
+    def calc() -> int:
         scenic_score = 0
-        coord = None
-        for i in range(1, m - 1):
-            for j in range(1, n - 1):
-                score = get_score(i, j)
-                if score > scenic_score:
-                    scenic_score = score
-                    coord = (i, j)
+        for i in range(1, m - 2):
+            for j in range(1, n - 2):
                 scenic_score = max(scenic_score, get_score(i, j))
-        print('highest coord', coord)
         return scenic_score
     return calc()
 
 
 matrix = build_matrix(lines)
-# print('matrix', matrix)
-# print(count_visible_trees(matrix))
+
+print(count_visible_trees(matrix))
 start_time = time.time()
 print('highest score', scenic_score(matrix))
 end_time = time.time()
