@@ -1,3 +1,6 @@
+import time
+
+
 file = open('day8/input.txt', 'r')
 lines = file.readlines()
 
@@ -60,7 +63,6 @@ def scenic_score(matrix):
     def get_score(row, col):
 
         directions = [(1, 0), (0, 1), (-1, 0), (0, -1)]
-        print('Tree', (row, col), matrix[row][col])
         score = 1
 
         for direction in directions:
@@ -68,16 +70,6 @@ def scenic_score(matrix):
             next_row = row
             next_col = col
             height = matrix[next_row][next_col]
-
-            if (1, 0) == direction:
-                print('going right')
-            if (0, 1) == direction:
-                print('going down')
-            if (-1, 0) == direction:
-                print('going left')
-            if (0, -1) == direction:
-                print('going up')
-
             while True:
                 x, y = direction
                 next_col += x
@@ -88,12 +80,6 @@ def scenic_score(matrix):
                 counter += 1
                 if height <= matrix[next_row][next_col]:
                     break
-
-                # height = matrix[next_row][next_col]
-                # print('Current height', height, 'next height',
-                #       matrix[next_row][next_col])
-
-            print('I can see ', counter, 'trees')
             score *= counter
         return score
 
@@ -113,8 +99,12 @@ def scenic_score(matrix):
 
 
 matrix = build_matrix(lines)
-print('matrix', matrix)
-print(count_visible_trees(matrix))
-print('higheest score', scenic_score(matrix))
+# print('matrix', matrix)
+# print(count_visible_trees(matrix))
+start_time = time.time()
+print('highest score', scenic_score(matrix))
+end_time = time.time()
+time_elapsed = end_time - start_time
+print('time elapsed', time_elapsed * 1000)
 
 file.close()
