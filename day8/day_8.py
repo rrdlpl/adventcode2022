@@ -42,10 +42,10 @@ def count_visible_trees(forest):
                 max_visible_height_left = forest[i][j]
                 visited.add(coord)
 
-    return len(visited) + 4 * (n - 1)
+    return (len(visited) + 4 * (n - 1), visited)
 
 
-def scenic_score(forest):
+def scenic_score(set):
     n = len(forest)
 
     def can_move(row, col):
@@ -74,9 +74,9 @@ def scenic_score(forest):
 
     def calc() -> int:
         scenic_score = 0
-        for i in range(1, n - 2):
-            for j in range(1, n - 2):
-                scenic_score = max(scenic_score, get_score(i, j))
+        for coord in trees:
+            i, j = coord
+            scenic_score = max(scenic_score, get_score(i, j))
         return scenic_score
     return calc()
 
@@ -86,10 +86,11 @@ lines = file.readlines()
 file.close()
 
 forest = build_forest(lines)
+solution, trees = count_visible_trees(forest)
+print('First', solution)
 
-print('First', count_visible_trees(forest))
 start_time = time.time()
-print('Second', scenic_score(forest))
+print('Second', scenic_score(trees))
 end_time = time.time()
 time_elapsed = end_time - start_time
 print('Time elapsed', time_elapsed * 1000)
