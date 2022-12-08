@@ -15,11 +15,10 @@ def build_matrix(lines):
 
 
 def count_visible_trees(matrix):
-    m = len(matrix)
-    n = len(matrix[0])
+    n = len(matrix)
     visited = set()
 
-    for i in range(1, m - 1):
+    for i in range(1, n - 1):
         max_visible_height_top = matrix[0][i]
         max_visible_height_left = matrix[i][0]
         max_visible_height_bottom = matrix[n - 1][i]
@@ -39,24 +38,21 @@ def count_visible_trees(matrix):
             if matrix[j][i] > max_visible_height_top:
                 coord = (j, i)
                 max_visible_height_top = matrix[j][i]
-
                 visited.add(coord)
 
             if matrix[i][j] > max_visible_height_left:
                 coord = (i, j)
-
                 max_visible_height_left = matrix[i][j]
                 visited.add(coord)
 
-    return len(visited) + 2 * m + 2 * (n - 2)
+    return len(visited) + 4 * (n - 1)
 
 
 def scenic_score(matrix):
-    m = len(matrix)
-    n = len(matrix[0])
+    n = len(matrix)
 
     def can_move(row, col):
-        return row >= 0 and col >= 0 and row < m and col < n
+        return row >= 0 and col >= 0 and row < n and col < n
 
     def get_score(row, col) -> int:
         directions = [(1, 0), (0, 1), (-1, 0), (0, -1)]
@@ -81,7 +77,7 @@ def scenic_score(matrix):
 
     def calc() -> int:
         scenic_score = 0
-        for i in range(1, m - 2):
+        for i in range(1, n - 2):
             for j in range(1, n - 2):
                 scenic_score = max(scenic_score, get_score(i, j))
         return scenic_score
