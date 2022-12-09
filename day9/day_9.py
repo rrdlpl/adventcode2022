@@ -1,4 +1,6 @@
-from collections import deque
+import matplotlib.pyplot as plt
+from matplotlib import animation
+
 import math
 import time
 
@@ -76,6 +78,8 @@ def simulate2(lines: str):
     tail = rope[0]
     visited = set()
     visited.add(tail)
+    paths = []
+    paths.append(rope.copy())
 
     for line in lines:
         line = line.strip()
@@ -106,10 +110,11 @@ def simulate2(lines: str):
                         prev_y -= 1
                     rope[i] = (prev_x, prev_y)
 
-            # print(rope)
+            print(rope)
+            paths.append(rope.copy())
             visited.add(rope[0])
 
-    return visited
+    return (visited, paths)
 
 
 file = open('day9/input.txt', 'r')
@@ -119,10 +124,50 @@ start_time = time.time()
 
 solution1 = simulate(lines)
 print('Solution 1', len(solution1))
-visited = simulate2(lines)
+visited, paths = simulate2(lines)
 
 print('Solution 2', len(visited))
 end_time = time.time()
 print('Time ellapsed', (end_time - start_time) * 1000)
 
 file.close()
+
+# print('paths', paths)
+
+# Create some data to plot
+x = []
+y = []
+for path in paths:
+    for coord in path:
+        x.append(coord[0])
+        y.append(coord[1])
+
+
+
+
+# Create a figure and axis
+fig, ax = plt.subplots()
+
+# Create a scatter plot
+scatter, = ax.plot(x, y, 'bo')
+
+# This function will be called to update the plot
+def update(num):
+    # Update the data for the scatter plot
+    scatter.set_data(x[num-10:num], y[num-10:num])
+    colors = ['crimson', 'darkorange', 'lime', 'cornflowerblue', 'purple', 'fuchsia']
+    scatter.set_color(colors[num % len(colors)])
+
+    
+    return scatter,
+
+# Create the animation
+plt.axis([min(x) - 10, max(x) + 10, min(y) - 10, max(y) + 10])
+
+anim = animation.FuncAnimation(fig, update, frames=len(x), interval=100)
+# FFwriter=animation.FFMpegWriter(fps=10, extra_args=['-vcodec', 'libx264'])
+
+anim.save('my_animation2.gif', fps=30)
+
+# Show the plot
+plt.show()
