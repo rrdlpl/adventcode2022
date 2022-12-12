@@ -14,7 +14,6 @@ def generate_matrix(lines):
     for line in lines:
         line = line.strip()
         matrix.append(list(line))
-
     return matrix
 
 
