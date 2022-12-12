@@ -52,9 +52,12 @@ def dijkstra(matrix, start, end):
             old_index = ord(matrix[row][col])
             # Can hike ? (abs(old_index - ord(matrix[new_row][new_col]) <= 1
             # They can jump to suicide =>  old_index >= ord(matrix[new_row][new_col])
-            if new_col >= 0 and new_row >= 0 and new_col < len(matrix[0]) and new_row < len(matrix) and (abs(old_index - ord(matrix[new_row][new_col])) <= 1 or old_index >= ord(matrix[new_row][new_col])):
+            if new_col >= 0 and new_row >= 0 and new_col < len(matrix[0]) and new_row < len(matrix) and can_jump_or_hike(new_col, new_row, old_index):
                 adjacents.append((new_row, new_col))
         return adjacents
+
+    def can_jump_or_hike(new_col, new_row, old_index):
+        return (abs(old_index - ord(matrix[new_row][new_col])) <= 1 or old_index >= ord(matrix[new_row][new_col]))
 
     while queue:
         _, node = heap.heappop(queue)
@@ -92,9 +95,12 @@ def dijkstra_2(matrix, start, end):
             new_row = row + y
             old_index = ord(matrix[row][col])
 
-            if new_col >= 0 and new_row >= 0 and new_col < len(matrix[0]) and new_row < len(matrix) and (abs(ord(matrix[new_row][new_col]) - old_index) <= 1 or old_index <= ord(matrix[new_row][new_col])):
+            if new_col >= 0 and new_row >= 0 and new_col < len(matrix[0]) and new_row < len(matrix) and can_jump_or_hike(new_col, new_row, old_index):
                 adjacents.append((new_row, new_col))
         return adjacents
+
+    def can_jump_or_hike(new_col, new_row, old_index):
+        return (abs(ord(matrix[new_row][new_col]) - old_index) <= 1 or old_index <= ord(matrix[new_row][new_col]))
 
     while queue:
         _, node = heap.heappop(queue)
@@ -120,11 +126,10 @@ def dijkstra_2(matrix, start, end):
 start_time = time.time()
 
 matrix = generate_matrix(lines)
-print('matrix', matrix)
 start, end = get_start_and_end_points(matrix)
 
 end_steps = dijkstra(matrix, start, end)
-print('Steps to end', end_steps)
+print('Solution 1', end_steps)
 
 min_steps = dijkstra_2(matrix, start, end)
 print('Solution 2', min_steps)
