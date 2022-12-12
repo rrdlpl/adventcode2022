@@ -65,7 +65,7 @@ def dijkstra(matrix, start, end):
             if adj_node in visited:
                 continue
             new_steps = distances[node] + 1
-            if distances[adj_node] > new_steps:
+            if new_steps < distances[adj_node]:
                 distances[adj_node] = new_steps
                 heap.heappush(queue, (new_steps, adj_node))
 
