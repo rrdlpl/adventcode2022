@@ -1,8 +1,11 @@
+import matplotlib.pyplot as plt
+import seaborn as sns
 from collections import defaultdict
 import heapq as heap
 
 import math
 import time
+import numpy as np
 
 
 file = open('day12/input.txt', 'r')
@@ -14,6 +17,7 @@ def generate_matrix(lines):
     for line in lines:
         line = line.strip()
         matrix.append(list(line))
+
     return matrix
 
 
@@ -35,6 +39,7 @@ def dijkstra(matrix, start, end):
     distances[start] = 0
     visited = set()
     queue = []
+    path = {}
     heap.heappush(queue, (0, start))
     matrix[start[0]][start[1]] = 'a'
     matrix[end[0]][end[1]] = 'z'
@@ -69,9 +74,10 @@ def dijkstra(matrix, start, end):
             new_steps = distances[node] + 1
             if new_steps < distances[adj_node]:
                 distances[adj_node] = new_steps
+                path[adj_node] = node
                 heap.heappush(queue, (new_steps, adj_node))
 
-    return distances[end]
+    return (distances[end], path)
 
 
 def dijkstra_2(matrix, start, end):
@@ -79,6 +85,7 @@ def dijkstra_2(matrix, start, end):
     distances[end] = 0
     visited = set()
     queue = []
+    path = {}
     heap.heappush(queue, (0, end))
     matrix[start[0]][start[1]] = 'a'
     matrix[end[0]][end[1]] = 'z'
@@ -111,15 +118,19 @@ def dijkstra_2(matrix, start, end):
                 continue
             new_steps = distances[node] + 1
             if new_steps < distances[adj_node]:
+                path[adj_node] = node
                 distances[adj_node] = new_steps
                 heap.heappush(queue, (new_steps, adj_node))
 
     min_steps = math.inf
+    new_start = None
     for i in range(len(matrix)):
         for j in range(len(matrix[0])):
             if matrix[i][j] == 'a':
-                min_steps = min(min_steps, distances[(i, j)])
-    return min_steps
+                if distances[(i, j)] < min_steps:
+                    min_steps = distances[(i, j)]
+                    new_start = (i, j)
+    return min_steps, path, new_start
 
 
 start_time = time.time()
@@ -127,10 +138,10 @@ start_time = time.time()
 matrix = generate_matrix(lines)
 start, end = get_start_and_end_points(matrix)
 
-end_steps = dijkstra(matrix, start, end)
+end_steps, first_part_path = dijkstra(matrix, start, end)
 print('Solution 1', end_steps)
 
-min_steps = dijkstra_2(matrix, start, end)
+min_steps, second_path, new_start = dijkstra_2(matrix, start, end)
 print('Solution 2', min_steps)
 
 print('Start ', start, 'End', end)
@@ -138,3 +149,55 @@ end_time = time.time()
 print('Time ellapsed', (end_time - start_time) * 1000)
 
 file.close()
+
+
+# Create a grid of points using the meshgrid function
+x, y = np.meshgrid(np.arange(0, 10), np.arange(0, 10))
+
+
+def heatmap(matrix):
+    heatmap = []
+    for row in matrix:
+        heatmap.append([ord(s) - ord('a') for s in row])
+    return heatmap
+
+
+heat = heatmap(matrix)
+
+# # Convert the list of data values into a 2-dimensional array
+# heat = np.array(heat).reshape(len(matrix[0]), len(matrix))
+
+# # Create a figure and axes object
+# fig = plt.figure()
+# ax = fig.add_subplot(111, projection='3d')
+
+# # Create a grid of points using the meshgrid function
+# x, y = np.meshgrid(np.arange(0, len(matrix)), np.arange(0, len(matrix[0])))
+
+# # Use the plot_surface method on the 3D axes object to create the 3D heatmap
+# ax.plot_surface(x, y, heat, cmap="YlGnBu")
+
+
+# # Show the plot
+
+def draw_path(start, end, path, heat):
+    ax = sns.heatmap(heat, cmap="YlGnBu")
+
+    print('Start', start)
+    print('End', end)
+    print('Path end', path[end])
+    c = 1
+    while path[end] != start:
+        c += 1
+        node = path[end]
+        i, j = node
+        ax.add_artist(plt.Rectangle((j, i), 1, 1, color='red'))
+        end = node
+
+
+#draw_path(start, end, first_part_path, heat)
+
+
+draw_path(end, new_start, second_path, heat)
+
+plt.show()
