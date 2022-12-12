@@ -164,21 +164,6 @@ def heatmap(matrix):
 
 heat = heatmap(matrix)
 
-# # Convert the list of data values into a 2-dimensional array
-# heat = np.array(heat).reshape(len(matrix[0]), len(matrix))
-
-# # Create a figure and axes object
-# fig = plt.figure()
-# ax = fig.add_subplot(111, projection='3d')
-
-# # Create a grid of points using the meshgrid function
-# x, y = np.meshgrid(np.arange(0, len(matrix)), np.arange(0, len(matrix[0])))
-
-# # Use the plot_surface method on the 3D axes object to create the 3D heatmap
-# ax.plot_surface(x, y, heat, cmap="YlGnBu")
-
-
-# # Show the plot
 
 def draw_path(start, end, path, heat):
     ax = sns.heatmap(heat, cmap="YlGnBu")
