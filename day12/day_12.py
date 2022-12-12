@@ -50,6 +50,8 @@ def dijkstra(matrix, start, end):
             new_col = col + x
             new_row = row + y
             old_index = ord(matrix[row][col])
+            # Can hike ? (abs(old_index - ord(matrix[new_row][new_col]) <= 1
+            # They can jump to suicide =>  old_index >= ord(matrix[new_row][new_col])
             if new_col >= 0 and new_row >= 0 and new_col < len(matrix[0]) and new_row < len(matrix) and (abs(old_index - ord(matrix[new_row][new_col])) <= 1 or old_index >= ord(matrix[new_row][new_col])):
                 adjacents.append((new_row, new_col))
         return adjacents
@@ -89,7 +91,7 @@ def dijkstra_2(matrix, start, end):
             new_col = col + x
             new_row = row + y
             old_index = ord(matrix[row][col])
-            
+
             if new_col >= 0 and new_row >= 0 and new_col < len(matrix[0]) and new_row < len(matrix) and (abs(ord(matrix[new_row][new_col]) - old_index) <= 1 or old_index <= ord(matrix[new_row][new_col])):
                 adjacents.append((new_row, new_col))
         return adjacents
@@ -103,7 +105,7 @@ def dijkstra_2(matrix, start, end):
             if adj_node in visited:
                 continue
             new_steps = distances[node] + 1
-            if distances[adj_node] > new_steps:
+            if new_steps < distances[adj_node]:
                 distances[adj_node] = new_steps
                 heap.heappush(queue, (new_steps, adj_node))
 
