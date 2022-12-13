@@ -51,7 +51,7 @@ def sum_correct_pairs():
 def merge_sort(packets):
     if len(packets) <= 1:
         return packets
-    mid = int(len(packets) / 2)
+    mid = len(packets) // 2
     left = packets[0:mid]
     right = packets[mid:]
     return merge(merge_sort(left), merge_sort(right))
