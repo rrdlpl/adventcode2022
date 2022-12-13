@@ -41,7 +41,7 @@ def sum_correct_pairs():
     for i in range(0, len(lines), 3):
         a = eval(lines[i].strip())
         b = eval(lines[i + 1].strip())
-        if compare_lists(a, b) == -1:
+        if compare_lists(a, b) == True:
             pair_index = (i // 3) + 1
 
             sum += pair_index
