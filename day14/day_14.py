@@ -70,23 +70,10 @@ def parse_input(lines):
     return rocks_positions, abyss_y
 
 
-def is_at_rest(start, rocks_positions):
-    x, y = start
-    blocked = True
-
-    for direction in directions:
-        dx, dy = direction
-        next_move = (x + dx, y + dy)
-        blocked = blocked & (next_move in rocks_positions)
-        if not blocked:
-            return blocked, next_move
-
-    return blocked, None
-
-
 def pour_sand(position, rocks_positions, abyss_y, sand):
     if position[1] >= abyss_y:
         return
+
     is_resting, next_move = is_at_rest(position, rocks_positions)
     if is_resting:
         sand.add(position)
@@ -95,22 +82,77 @@ def pour_sand(position, rocks_positions, abyss_y, sand):
     pour_sand(next_move, rocks_positions, abyss_y, sand)
 
 
-def part_one():
+def is_at_rest(start, rocks_positions):
+    x, y = start
+    blocked = True
+
+    for direction in directions:
+        dx, dy = direction
+        next_move = (x + dx, y + dy)
+        blocked = blocked & (
+            next_move in rocks_positions)
+        if not blocked:
+            return blocked, next_move
+
+    return blocked, None
+
+
+def is_at_rest_2(start, rocks_positions, floor):
+    x, y = start
+    blocked = True
+
+    for direction in directions:
+        dx, dy = direction
+        next_move = (x + dx, y + dy)
+        blocked = blocked & (
+            next_move in rocks_positions or next_move[1] >= floor)
+        if not blocked:
+            return blocked, next_move
+
+    return blocked, None
+
+
+def pour_sand_2(position, rocks_positions, abyss_y, sand):
+    is_resting, next_move = is_at_rest_2(
+        position, rocks_positions, abyss_y + 2)
+    if is_resting and position == (500, 0):
+        sand.add((500, 0))
+        return
+    elif is_resting:
+        sand.add(position)
+        rocks_positions.add(position)
+        return
+    pour_sand_2(next_move, rocks_positions, abyss_y, sand)
+
+
+def solve():
     start = (500, 0)
     rocks_positions, abyss_y = parse_input(lines)
-    sand = set()
+    rocks_positions_2 = rocks_positions.copy()
 
-    while True:
-        size = len(sand)
-        pour_sand(start, rocks_positions, abyss_y, sand)
-        if size == len(sand):
-            break
-    print('Solution 1', len(sand))
+    def part_one(sand):
+        while True:
+            size = len(sand)
+            pour_sand(start, rocks_positions, abyss_y, sand)
+            if size == len(sand):
+                break
+        print('Solution 1', len(sand))
+
+    def part_two(sand, rocks):
+        while True:
+            size = len(sand)
+            pour_sand_2(start, rocks, abyss_y, sand)
+            if size == len(sand):
+                break
+        print('Solution 2', len(sand))
+
+    part_one(set())
+    part_two(set(), rocks_positions_2)
 
 
 start_time = time.time()
 
-part_one()
+solve()
 # print('is at rest 500, 7', is_at_rest((500, 7), rocks_positions))
 # print('is at rest 500, 8', is_at_rest((500, 8), rocks_positions))
 
