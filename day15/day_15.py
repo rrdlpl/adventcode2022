@@ -55,12 +55,9 @@ def solution_one(sensors, target_y):
 
     }
 
-    sensors_at_y = []
     for sensor in sensors:
         beacon = sensors[sensor]
         set_ranges(sensor, beacon, ranges_without_beacon, target_y)
-        if sensor.y == target_y:
-            sensors_at_y.append(sensor)
 
     first_left, first_right = ranges_without_beacon[target_y][0]
     interv = interval(min(first_left.x, first_right.x),
@@ -68,14 +65,13 @@ def solution_one(sensors, target_y):
 
     for i in range(1, len(ranges_without_beacon[target_y])):
         left, right = ranges_without_beacon[target_y][i]
-
         min_x = min(left.x, right.x)
         max_x = max(left.x, right.x)
-
         interv = interv | interval[min_x, max_x]
 
-    print('Interval', interv)
-    print('Solution 1.', interv)
+    # print('Interval', interv)
+    # print('Solution 1.', interv)
+    return interv
 
 
 def set_ranges(sensor, beacon, ranges_without_beacon, target_y):
@@ -86,12 +82,25 @@ def set_ranges(sensor, beacon, ranges_without_beacon, target_y):
         return
 
     dy = abs(target_y - sensor.y)
-    print('Radius ', radius)
-    print('Sensor => ', sensor, 'dy', dy)
+
     left = Vector2D(x - radius + dy, target_y)
     right = Vector2D(x + radius - dy, target_y)
-    print('  adding left', left)
-    print('  adding right', right)
+
+    adjust_overlapping_range(target_y, ranges_without_beacon, left, right)
+
+
+def set_ranges_2(sensor, beacon, ranges_without_beacon, target_y, low, high):
+    radius = (sensor - beacon).get_radius()
+    x = sensor.x
+
+    if (sensor.y < target_y and sensor.y + radius < target_y) or (sensor.y > target_y and sensor.y - radius > target_y):
+        return
+
+    dy = abs(target_y - sensor.y)
+
+    left = Vector2D(max(x - radius + dy, low), target_y)
+    right = Vector2D(min(x + radius - dy, high), target_y)
+
     adjust_overlapping_range(target_y, ranges_without_beacon, left, right)
 
 
@@ -102,9 +111,58 @@ def adjust_overlapping_range(y, ranges_without_beacon, left, right):
         ranges_without_beacon[y] = [(left, right)]
 
 
+def solution_two(sensors, target_y, ranges_without_beacon, low, high):
+
+    for sensor in sensors:
+        beacon = sensors[sensor]
+        set_ranges_2(sensor, beacon, ranges_without_beacon,
+                     target_y, low, high)
+
+    # print('Interval', interv)
+    # print('Solution 1.', interv)
+    return ranges_without_beacon
+
+
+def get_tunning_freq(sensors):
+    ranges_without_beacon = {}
+
+    intervals = []
+
+    high = 4_000_000
+    low = 0
+    for target_y in range(high):
+        ranges_without_beacon = solution_two(
+            sensors, target_y, ranges_without_beacon, low, high)
+
+        interv = interval()
+        print('target y', target_y)
+        for left, right in ranges_without_beacon[target_y]:
+            interv = interv | interval([left.x, right.x])
+
+        print('Interval', interv)
+        intervals.append(interv)
+
+    for y, interv in enumerate(intervals):
+        if interv == interval([low, high]):
+
+            continue
+        _, x2 = interv[0]
+        for k in range(1, len(interv)):
+            x3, _ = interv[k]
+            if x3 - x2 >= 2:
+                print('Found gap at', interv, ' x = ', x2,
+                      'Freq = ',  (x2 + 1) * 4_000_000 + y)
+                return
+
+        print('Found gap at', y, interv, )
+
+
 start_time = time.time()
 sensors = parse_input(lines)
-solution_one(sensors, 2_000_000)
+# interv = solution_one(sensors, 10)
+# print('Solution 1', interv)
+
+get_tunning_freq(sensors)
 
 end_time = time.time()
 
