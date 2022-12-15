@@ -105,7 +105,7 @@ def is_at_rest_2(start, rocks_positions, floor):
         dx, dy = direction
         next_move = (x + dx, y + dy)
         blocked = blocked & (
-            next_move in rocks_positions or next_move[1] >= floor)
+            next_move in rocks_positions or next_move[1] == floor)
         if not blocked:
             return blocked, next_move
 
