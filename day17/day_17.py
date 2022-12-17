@@ -18,7 +18,7 @@ class Tetris:
         self.resting_rocks = set()
 
     def add_air(self):
-        for _ in range(4):
+        for _ in range(10):
             self.stack.append(list('|' + '.' * self.width + '|'))
 
     def print(self):
@@ -27,7 +27,7 @@ class Tetris:
 
     def add_shape(self, shape):
         y = len(self.stack) - 1
-        shape.start(2, y)
+        # shape.start(2, y)
 
         while not shape.is_at_rest(self.resting_rocks):
             self.draw(shape, '#')
@@ -45,6 +45,8 @@ class Tetris:
         print('stack at bottom', ''.join(self.stack[1]))
 
     def throw_shapes(self, shapes):
+        shapes[0].start(2, len(self.stack) - 1)
+        shapes[1].start(0, len(self.stack) - 1)
         for shape in shapes:
             self.add_shape(shape)
 
@@ -58,7 +60,6 @@ class Tetris:
 class Shape:
     def __init__(self, points) -> None:
         self.points = points
-        # self.height = height
 
     def start(self, start_x, start_y):
         for i in range(len(self.points)):
@@ -66,18 +67,40 @@ class Shape:
             self.points[i] = (x + start_x, start_y + y)
 
     def fall(self, resting_rocks: set):
+        def can_keep_falling(point, resting_rocks):
+            x, y = point
+            if y - 1 == 0 or (x, y - 1) in resting_rocks:
+                print('Resting rocks', resting_rocks)
+                for point in self.points:
+                    resting_rocks.add(point)
+                return False
+            return True
+
         aux = sorted(self.points, key=itemgetter(1))
-        x, y = aux[0]
-        if y - 1 == 0 or (x, y - 1) in resting_rocks:
-            print('Resting rocks', resting_rocks)
-            for point in aux:
-                resting_rocks.add(point)
+        # bottom side can keep falling
+        if not can_keep_falling(aux[0], resting_rocks):
             return
+
+        aux = sorted(self.points, key=itemgetter(0))
+
+        # left side can keep falling
+        if not can_keep_falling(aux[0], resting_rocks):
+            return
+        # right side can keep falling
+        if not can_keep_falling(aux[len(aux) - 1], resting_rocks):
+            return
+
+        can_keep_falling_too = True
         for i in range(len(self.points)):
             x, y = self.points[i]
             if y - 1 == 0 or (x, y - 1) in resting_rocks:
+                can_keep_falling_too = False
                 break
             self.points[i] = (x, y - 1)
+
+        if not can_keep_falling_too:
+            for point in aux:
+                resting_rocks.add(point)
 
     def is_at_rest(self, resting_rocks: set):
         aux = sorted(self.points, key=itemgetter(1))
@@ -122,7 +145,7 @@ cross = Shape([(0, 1), (1, 0), (1, 1), (1, 2), (2, 1)])
 
 shapes = [horizontal_line, cross]
 
-tetris.throw_shapes([horizontal_line, cross])
+tetris.throw_shapes([vertical_line, cross])
 # tetris.print()
 
 end_time = time.time()
