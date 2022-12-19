@@ -1,9 +1,12 @@
 from collections import defaultdict, deque
-from heapq import heapify
-import heapq
+
+from math import lcm
 import time
 import os
 from operator import itemgetter
+
+
+# from numpy import range
 
 
 def clear():
@@ -16,11 +19,9 @@ class Tetris:
             list('+' + '_' * width + '+')
         ]
         self.width = width
-        self.height = 0
         self.resting_rocks = set()
         self.instruction = 0
-        self.heighest = []
-        self.heap = heapify(self.heighest)
+        self.heighest = -1
         self.y_dict = defaultdict(lambda: 0)
         self.floor = 0
 
@@ -36,9 +37,7 @@ class Tetris:
             print(t)
 
     def add_shape(self, shape, jet_instructions):
-        aux = self.get_heighst_rock()
-        # y = len(self.stack) - 1 if aux == -1 else aux
-        # print('aux', aux)
+        aux = self.heighest
         if aux == -1:
             shape.start(2, len(self.stack) - 1)
         else:
@@ -46,69 +45,38 @@ class Tetris:
 
         length = len(jet_instructions)
 
-        # print('New rock falling')
         while not shape.is_at_rest(self.resting_rocks, self.floor):
-            self.draw(shape, '#')
-            self.print()
-            self.draw(shape, '.')
+            # self.draw(shape, '#')
+            # self.print()
+            # self.draw(shape, '.')
             if jet_instructions[self.instruction % length] == '<':
                 shape.move_left(0, self.resting_rocks)
             else:
                 shape.move_right(self.width, self.resting_rocks)
 
             shape.fall(self.resting_rocks, self.floor)
-            self.draw(shape, '#')
-            self.print()
-            self.draw(shape, '.')
+            # self.draw(shape, '#')
+            # self.print()
+            # self.draw(shape, '.')
             self.instruction += 1
 
-        # self.adjust_cave_height()
-        for point in shape.points:
-            x, y = point
-            if len(self.heighest) == 1:
-                heapq.heappushpop(self.heighest, y)
-            else:
-                heapq.heappush(self.heighest, y)
+        for i in range(len(shape.points)):
+            _, y = shape.points[i]
 
+            self.heighest = max(self.heighest, y)
             self.y_dict[y] += 1
             if self.width == self.y_dict[y]:
-                # print('new wall', self.y_dict[y])
-                # print('Removing', len(self.resting_rocks))
+                self.y_dict.clear()
                 self.floor = y
                 result = list(filter(lambda x: x[1] >= y, self.resting_rocks))
-                # print(result)
                 self.resting_rocks = set(result)
 
-                # self.resting_rocks = set(
-                #     [(0, y), (1, y), (2, y), (3, y), (4, y), (5, y), (6, y)])
-                # print('new floor', self.floor)
-
-                # print('AAAAAAA')
-
         self.draw(shape, '#')
-
-    def adjust_cave_height(self):
-
-        y = self.get_heighst_rock()
-
-        if len(self.stack) - 1 - y <= 3:
-            height_needed = abs(len(self.stack) - (y + 3))
-
-            self.add_air(height_needed)
-
-    def get_heighst_rock(self):
-        if len(self.heighest) == 0:
-            return -1
-        return self.heighest[0]
-        # y = -1
-        # for rock in self.resting_rocks:
-        #     y = max(y, rock[1])
-        # return y
 
     def throw_shapes(self, shapes, jet_instructions, n):
         for i in range(n):
             if i > 0 and i % 1_000_000 == 0:
-                print('%', i)
+                print(i // 1_000_000, '/', n // 1_000_000)
 
             shape = shapes[i % len(shapes)]
             self.add_shape(shape, jet_instructions)
@@ -139,14 +107,14 @@ class Shape:
         def can_keep_falling(point, resting_rocks):
             x, y = point
             if y - 1 == floor or (x, y - 1) in resting_rocks:
-                for point in self.points:
-                    resting_rocks.add(point)
+                for i in range(len(self.points)):
+                    resting_rocks.add(self.points[i])
                 return False
             return True
 
         # print('Rock falls one unit:')
-        for point in self.points:
-            if not can_keep_falling(point, resting_rocks):
+        for i in range(len(self.points)):
+            if not can_keep_falling(self.points[i], resting_rocks):
                 return
 
         for i in range(len(self.points)):
@@ -156,33 +124,25 @@ class Shape:
     def is_at_rest(self, resting_rocks: set, floor):
         aux = sorted(self.points, key=itemgetter(1))
         x, y = aux[0]
-        # print('lowest', x, y)
-        # print(self.points)
         if y == floor or (x, y) in resting_rocks:
-
             return True
         return False
 
     def move_right(self, right_wall, resting_rocks):
-
-        for point in self.points:
-            x, y = point
+        for i in range(len(self.points)):
+            x, y = self.points[i]
             if x + 1 >= right_wall or (x + 1, y) in resting_rocks:
-                # print('Jet of gas pushes rock right, but nothing happens: ')
                 return
-        # print('Jet of gas pushes rock right:')
         for i in range(len(self.points) - 1, -1, -1):
             x, y = self.points[i]
             self.points[i] = (x + 1, y)
 
     def move_left(self, left_wall, resting_rocks):
-        for point in self.points:
-            x, y = point
+        for i in range(len(self.points)):
+            x, y = self.points[i]
             if x - 1 < left_wall or (x - 1, y) in resting_rocks:
-                # print('Jet of gas pushes rock left, but nothing happens: ')
                 return
 
-        # print('Jet of gas pushes rock left:')
         for i in range(len(self.points)):
             x, y = self.points[i]
             if x - 1 < left_wall or (x - 1, y) in resting_rocks:
@@ -198,8 +158,7 @@ start_time = time.time()
 
 DEBUG = False
 
-tetris = Tetris()
-tetris.add_air(3)
+
 horizontal_line = Shape([(0, 0), (1, 0), (2, 0), (3, 0)], 'horizontal')
 vertical_line = Shape([(0, 0), (0, 1), (0, 2), (0, 3)], 'vertical')
 
@@ -210,13 +169,110 @@ cross = Shape([(0, 1), (1, 0), (1, 1), (1, 2), (2, 1)], 'cross')
 
 shapes = [horizontal_line, cross, L, vertical_line, square]
 
-tetris.throw_shapes(shapes, lines[0].strip(), 2022)
-print('Solution 1', tetris.get_heighst_rock())
+
+# def part_two():
+#     def formula(shapes, instruction, iterations, x):
+#         print('There are ', len(shapes), ' shapes')
+#         print('There are', len(instruction), ' instructions')
+#         mcd = lcm(len(shapes), len(instruction), x)
+#         print('(mcd)', mcd)
+#         n = iterations // mcd
+#         print('n =', n)
+#         missing = iterations - n * mcd
+#         print('There are ', missing, ' missing')
+#         cycleTetris = Tetris(7)
+#         cycleTetris.add_air(3)
+
+#         cycleTetris.throw_shapes(shapes, instruction, mcd)
+
+#         missingTetris = Tetris(7)
+#         missingTetris.add_air(3)
+#         missingTetris.throw_shapes(shapes, instruction, missing)
+
+#         print('Cycle heighst', cycleTetris.heighest)
+#         print('Missing parts heights', missingTetris.heighest)
+
+#         # + (missing // len(instruction))
+#         # - (iterations // len(instruction))
+#         return (cycleTetris.heighest * n) + (missingTetris.heighest) - (iterations // len(instruction))
+
+#     def test_input():
+#         test = Tetris(7)
+#         test.add_air(3)
+#         test.throw_shapes(
+#             shapes, '>>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>', 2022)
+#         print('Solution 1', test.heighest, 'Expected', 3068)
+#         real = Tetris(7)
+#         real.add_air(3)
+# #        real.throw_shapes(shapes, lines[0], N)
+#         print('Real input solution 1', real.heighest, 3119)
+#         return real.heighest
+
+#     N = 100_000_000_0000
+#     R = test_input()
+# F = formula(shapes, lines[0], N)
+
+# print('Test', formula(
+#     shapes, '>>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>', N) - 1514285714288)
+
+# print('Error ', R, ' - ', F, ' = ', R - F)
 
 
+def part_two():
+    def get_board(board):
+        strings = []
+        miny = max(y for x, y in list(board))
+        for y in range(1, miny):
+            strings.append(''.join(
+                ['#' if (i, y) in board else ' ' for i in range(7)]))
+        #     print()
+        # print("-"*15)
+        return strings[::-1]
+
+    def find_cycle(board):
+        key = {}
+        for i,  b in enumerate(board):
+            if b in key:
+                print('Found cycle at', i, b)
+            else:
+                key[b] = b
+
+    instructions = '>>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>'
+    # instructions = lines[0]
+    mcd = lcm(5, len(instructions))
+    n = 100_000_000_0000 // mcd
+    missing = 100_000_000_0000 - (n * mcd)
+
+    print('Mcd', mcd)
+    print('n', n)
+    print('missing', missing)
+
+    tetris = Tetris(7)
+    missing_tetris = Tetris(7)
+    tetris.add_air(3)
+    missing_tetris.add_air(3)
+
+    tetris.throw_shapes(shapes, instructions, mcd)
+
+    board = get_board(tetris.resting_rocks)
+    for b in board:
+        print(b)
+
+    # find_cycle(board)
+
+    print('Highest before', tetris.heighest)
+
+    missing_tetris.throw_shapes(shapes, instructions, missing)
+
+    highest = n * (tetris.heighest - 7) + missing_tetris.heighest
+    print('Highest', highest)
+
+
+part_two()
 end_time = time.time()
 
-print('Time ellapsed', (end_time - start_time) * 1000)
+print('Time ellapsed', (end_time - start_time), 'secs')
+
 
 file.close()
 
