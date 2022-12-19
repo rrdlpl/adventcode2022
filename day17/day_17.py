@@ -48,9 +48,9 @@ class Tetris:
 
         # print('New rock falling')
         while not shape.is_at_rest(self.resting_rocks, self.floor):
-            self.draw(shape, '#')
-            self.print()
-            self.draw(shape, '.')
+            # self.draw(shape, '#')
+            # self.print()
+            # self.draw(shape, '.')
             if jet_instructions[self.instruction % length] == '<':
                 shape.move_left(0, self.resting_rocks)
             else:
@@ -59,10 +59,13 @@ class Tetris:
             shape.fall(self.resting_rocks, self.floor)
             self.draw(shape, '#')
             self.print()
-            self.draw(shape, '.')
+            self.draw(shape, ' ')
             self.instruction += 1
 
-        # self.adjust_cave_height()
+            time.sleep(1)
+            clear()
+
+        self.adjust_cave_height()
         for point in shape.points:
             x, y = point
             if len(self.heighest) == 1:
@@ -79,11 +82,11 @@ class Tetris:
                 # print(result)
                 self.resting_rocks = set(result)
 
-                # self.resting_rocks = set(
-                #     [(0, y), (1, y), (2, y), (3, y), (4, y), (5, y), (6, y)])
-                # print('new floor', self.floor)
+        # self.resting_rocks = set(
+        #     [(0, y), (1, y), (2, y), (3, y), (4, y), (5, y), (6, y)])
+        # print('new floor', self.floor)
 
-                # print('AAAAAAA')
+        # print('AAAAAAA')
 
         self.draw(shape, '#')
 
@@ -196,7 +199,7 @@ lines = file.readlines()
 
 start_time = time.time()
 
-DEBUG = False
+DEBUG = True
 
 tetris = Tetris()
 tetris.add_air(3)
