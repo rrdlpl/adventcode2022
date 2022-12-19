@@ -66,8 +66,8 @@ def part_two(input):
     queue.append((min_x - 1, min_y - 1, min_z - 1))
 
     while queue:
-        top = queue.popleft()
-        for cube in get_neighbors(top):
+        air_cube = queue.popleft()
+        for cube in get_neighbors(air_cube):
             if is_air(cube, air_cubes, (min_x, min_y, min_z), (max_x, max_y, max_z)):
                 air_cubes.add(cube)
                 queue.append(cube)
