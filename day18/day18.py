@@ -1,6 +1,7 @@
 
 
 from collections import deque
+import math
 
 
 cubes = [
@@ -14,8 +15,13 @@ for line in lines:
     cube = (line[0], line[1], line[2])
     cubes.append(cube)
 
-
 total = len(cubes) * 6
+for i in range(len(cubes)):
+    for j in range(i + 1, len(cubes)):
+        if math.dist(cubes[i], cubes[j]) <= 1:
+            total -= 2
+
+
 print('total area', total)
 
 
@@ -66,7 +72,7 @@ def part_two(input):
                 air_cubes.add(cube)
                 queue.append(cube)
 
-    print('print air cubes', air_cubes)
+    # print('print air cubes', air_cubes)
     print('air cube length', len(air_cubes))
 
     sum = 0
