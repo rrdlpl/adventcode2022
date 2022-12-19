@@ -26,7 +26,7 @@ class Tetris:
 
     def add_air(self, h):
         for _ in range(h + 1):
-            self.stack.append(list('|' + '.' * self.width + '|'))
+            self.stack.append(list('|' + ' ' * self.width + '|'))
 
     def print(self):
         if not DEBUG:
@@ -57,7 +57,7 @@ class Tetris:
                 shape.move_right(self.width, self.resting_rocks)
 
             shape.fall(self.resting_rocks, self.floor)
-            self.draw(shape, '#')
+            self.draw(shape, '͸')
             self.print()
             self.draw(shape, ' ')
             self.instruction += 1
@@ -88,7 +88,7 @@ class Tetris:
 
         # print('AAAAAAA')
 
-        self.draw(shape, '#')
+        self.draw(shape, '͸')
 
     def adjust_cave_height(self):
 
@@ -122,14 +122,15 @@ class Tetris:
         for point in shape.points:
             i, j = point
             if j < len(self.stack):
-                self.stack[j][i + 1] = char
+                self.stack[j][i + 1] = shape.color + char + '\033[0m'
 
 
 class Shape:
-    def __init__(self, points, name) -> None:
+    def __init__(self, points, name, color) -> None:
         self.points = points
         self.original_points = points.copy()
         self.name = name
+        self.color = color
 
     def start(self, start_x, start_y):
         self.points = self.original_points.copy()
@@ -203,12 +204,14 @@ DEBUG = True
 
 tetris = Tetris()
 tetris.add_air(3)
-horizontal_line = Shape([(0, 0), (1, 0), (2, 0), (3, 0)], 'horizontal')
-vertical_line = Shape([(0, 0), (0, 1), (0, 2), (0, 3)], 'vertical')
+horizontal_line = Shape([(0, 0), (1, 0), (2, 0), (3, 0)
+                         ], 'horizontal', '\033[0;31m')
+vertical_line = Shape([(0, 0), (0, 1), (0, 2), (0, 3)
+                       ], 'vertical', '\033[0;32m')
 
-square = Shape([(0, 0), (0, 1), (1, 0), (1, 1)], 'square')
-L = Shape([(0, 0), (1, 0), (2, 0), (2, 1), (2, 2)], 'L')
-cross = Shape([(0, 1), (1, 0), (1, 1), (1, 2), (2, 1)], 'cross')
+square = Shape([(0, 0), (0, 1), (1, 0), (1, 1)], 'square', '\033[0;33m')
+L = Shape([(0, 0), (1, 0), (2, 0), (2, 1), (2, 2)], 'L', '\033[0;34m')
+cross = Shape([(0, 1), (1, 0), (1, 1), (1, 2), (2, 1)], 'cross', '\033[0;36m')
 
 
 shapes = [horizontal_line, cross, L, vertical_line, square]
