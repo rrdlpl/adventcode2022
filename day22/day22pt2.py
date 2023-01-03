@@ -39,8 +39,8 @@ def is_at_edge(row, col):
          m and col < n and grid[row][col] == ' ')
 
 
-def build_graph(grid):
-    graph = {}
+def build_cube(grid):
+    cube = {}
     directions = [(1, 0), (0, 1), (-1, 0), (0, -1)]
     facing = ['>', 'v', '<', '^']
 
@@ -48,7 +48,7 @@ def build_graph(grid):
         for j in range(len(grid[0])):
             if grid[i][j] == ' ':
                 continue
-            graph[(i, j)] = {}
+            cube[(i, j)] = {}
             for k, dir in enumerate(directions):
                 face = facing[k]
                 x, y = dir
@@ -56,70 +56,70 @@ def build_graph(grid):
                 new_col = j + x
                 if is_at_edge(new_row, new_col):
                     continue
-                graph[(i, j)][face] = (new_row, new_col,  face)
+                cube[(i, j)][face] = (new_row, new_col,  face)
 
     # Face 1 going UP with face 6
     left_edge_face_6 = 150
 
     for j in range(50, 100):
-        graph[(0, j)]['^'] = (left_edge_face_6, 0, '>')
-        graph[(left_edge_face_6, 0)]['<'] = (0, j, 'v')
+        cube[(0, j)]['^'] = (left_edge_face_6, 0, '>')
+        cube[(left_edge_face_6, 0)]['<'] = (0, j, 'v')
         left_edge_face_6 += 1
 
     # Face 1 going LEFT with face 5
     left_edge_face_1 = [0, 50]  # col = 50
     left_edge_face_5 = 149
     for i in range(0, 50):
-        graph[(i, 50)]['<'] = (left_edge_face_5, 0, '>')
-        graph[(left_edge_face_5, 0)]['<'] = (i, 50, '>')
+        cube[(i, 50)]['<'] = (left_edge_face_5, 0, '>')
+        cube[(left_edge_face_5, 0)]['<'] = (i, 50, '>')
         left_edge_face_5 -= 1
 
     # Face 2 going UP with face 6
     down_edge_face_6 = 0
     for j in range(100, 150):
-        graph[(0, j)]['^'] = (199, down_edge_face_6, '^')
-        graph[(199, down_edge_face_6)]['v'] = (0, j, 'v')
+        cube[(0, j)]['^'] = (199, down_edge_face_6, '^')
+        cube[(199, down_edge_face_6)]['v'] = (0, j, 'v')
         down_edge_face_6 += 1
 
     # Face 2 going RIGHT with face 4
     right_edge_face_4 = 149
     for i in range(0, 50):
-        graph[(i, 149)]['>'] = (right_edge_face_4, 99, '<')
-        graph[(right_edge_face_4, 99)]['>'] = (i, 149, '<')
+        cube[(i, 149)]['>'] = (right_edge_face_4, 99, '<')
+        cube[(right_edge_face_4, 99)]['>'] = (i, 149, '<')
         right_edge_face_4 -= 1
 
     # Face 2 going DOWN with face 3
     right_edge_face_3 = 50
     for j in range(100, 150):
-        graph[(49, j)]['v'] = (right_edge_face_3, 99, '<')
-        graph[(right_edge_face_3, 99)]['>'] = (49, j, '^')
+        cube[(49, j)]['v'] = (right_edge_face_3, 99, '<')
+        cube[(right_edge_face_3, 99)]['>'] = (49, j, '^')
         right_edge_face_3 += 1
 
     # Face 3 going LEFT with face 5
     top_edge_face_5 = 0
     for i in range(50, 100):
-        graph[(i, 50)]['<'] = (100, top_edge_face_5, 'v')
-        graph[(100, top_edge_face_5)]['^'] = (i, 50, '>')
+        cube[(i, 50)]['<'] = (100, top_edge_face_5, 'v')
+        cube[(100, top_edge_face_5)]['^'] = (i, 50, '>')
         top_edge_face_5 += 1
 
     # face 4 going DOWN with face 6
     right_edge_face_6 = 150
     for j in range(50, 100):
-        graph[(149, j)]['v'] = (right_edge_face_6, 49, '<')
-        graph[(right_edge_face_6, 49)]['>'] = (149, j, '^')
+        cube[(149, j)]['v'] = (right_edge_face_6, 49, '<')
+        cube[(right_edge_face_6, 49)]['>'] = (149, j, '^')
         right_edge_face_6 += 1
 
-    for tuple in graph:
-        if '>' not in graph[tuple]:
+    for tuple in cube:
+        if '>' not in cube[tuple]:
             print('>', tuple, None)
-        if 'v' not in graph[tuple]:
+        if 'v' not in cube[tuple]:
             print('v', tuple, None)
-        if '<' not in graph[tuple]:
+        if '<' not in cube[tuple]:
             print('<', tuple, None)
-        if '^' not in graph[tuple]:
+        if '^' not in cube[tuple]:
             print('^', tuple, None)
 
-    return graph
+    return cube
     # print('graph', graph)
 
 
@@ -133,7 +133,7 @@ def part_two(instr):
     i, j = point
     grid[i][j] = '>'
 
-    graph = build_graph(grid)
+    cube = build_cube(grid)
     # print(graph[(0, 8)])
 
     for instruction in parse_instructions(instr):
@@ -149,8 +149,8 @@ def part_two(instr):
         current_direction = directions_reverse_map[facing_direction]
 
         for _ in range(instruction):
-            print('graph i, j', graph[(i, j)])
-            next_row, next_col, new_direction = graph[(
+            print('graph i, j', cube[(i, j)])
+            next_row, next_col, new_direction = cube[(
                 i, j)][current_direction]
 
             if grid[next_row][next_col] == '#':
