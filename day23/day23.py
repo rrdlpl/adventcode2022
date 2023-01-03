@@ -115,32 +115,25 @@ def part_one(elves):
                     proposed_moves[(x + 1, y)].append(elf)
                     break
 
-        for key in proposed_moves:
-            if len(proposed_moves[key]) == 1:
-                elves.remove(proposed_moves[key][0])
-                elves.add(key)
+        for move in proposed_moves:
+            if len(proposed_moves[move]) == 1:
+                elves.remove(proposed_moves[move][0])
+                elves.add(move)
 
-        # elves = elves.exclude(new_elves)
-        # print('mew', new_elves)
-        # print('static', static_elves)
-        #elves = new_elves.union(static_elves)
         print('len new elves', len(elves))
+
         moves.append(moves.pop(0))
 
     min_x = min(x for x, _ in elves)
-    min_y = min(y for _, y in elves)
+
     max_x = max(x for x, _ in elves)
-    max_y = max(x for x, _ in elves)
+    min_y = min(y for _, y in elves)
+    max_y = max(y for _, y in elves)
 
     print('Solution 1', (max_x - min_x + 1) * (max_y - min_y + 1) - len(elves))
 
 
-# print('Can Move north', can_move_north((6, 4)), True)
-# print('Can Move south', can_move_south((6, 4)), False)
-# print('Can Move east', can_move_east((6, 4)), True)
-# print('Can move west', can_move_west((6, 4)), False)
-# print('Can move west', can_move_west((5, 2)), True)
 grid = parse_input(lines)
 elves = get_elves_position(grid)
-# print('Elves', elves)
+
 part_one(elves)
