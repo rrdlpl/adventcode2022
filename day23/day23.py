@@ -89,12 +89,12 @@ def part_one(elves):
     moves = ['north', 'south', 'west', 'east']
 
     for _ in range(10):
-        new_elves = set()
         proposed_moves = defaultdict(lambda: [])
+
+        print('len elves', len(elves))
 
         for elf in elves:
             if can_move_north(elf) and can_move_south(elf) and can_move_east(elf) and can_move_west(elf):
-                new_elves.add(elf)
                 continue
 
             x, y = elf
@@ -117,11 +117,14 @@ def part_one(elves):
 
         for key in proposed_moves:
             if len(proposed_moves[key]) == 1:
-                new_elves.add(key)
-            else:
-                for static_elf in proposed_moves[key]:
-                    new_elves.add(static_elf)
-        elves = new_elves
+                elves.remove(proposed_moves[key][0])
+                elves.add(key)
+
+        # elves = elves.exclude(new_elves)
+        # print('mew', new_elves)
+        # print('static', static_elves)
+        #elves = new_elves.union(static_elves)
+        print('len new elves', len(elves))
         moves.append(moves.pop(0))
 
     min_x = min(x for x, _ in elves)
