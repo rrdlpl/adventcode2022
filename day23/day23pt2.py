@@ -85,13 +85,11 @@ def can_move_west(elf):
     return True
 
 
-def part_one(elves):
+def part_two(elves):
     moves = ['north', 'south', 'west', 'east']
 
-    for _ in range(10):
+    for round in range(30000):
         proposed_moves = defaultdict(lambda: [])
-
-        print('len elves', len(elves))
 
         for elf in elves:
             if can_move_north(elf) and can_move_south(elf) and can_move_east(elf) and can_move_west(elf):
@@ -115,25 +113,21 @@ def part_one(elves):
                     proposed_moves[(x + 1, y)].append(elf)
                     break
 
+        moved = False
         for move in proposed_moves:
             if len(proposed_moves[move]) == 1:
                 elves.remove(proposed_moves[move][0])
                 elves.add(move)
+                moved = True
 
-        print('len new elves', len(elves))
+        if not moved:
+            print('Solution 2', round + 1)
+            break
 
         moves.append(moves.pop(0))
-
-    min_x = min(x for x, _ in elves)
-
-    max_x = max(x for x, _ in elves)
-    min_y = min(y for _, y in elves)
-    max_y = max(y for _, y in elves)
-
-    print('Solution 1', (max_x - min_x + 1) * (max_y - min_y + 1) - len(elves))
 
 
 grid = parse_input(lines)
 elves = get_elves_position(grid)
 
-part_one(elves)
+part_two(elves)
