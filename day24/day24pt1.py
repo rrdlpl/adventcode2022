@@ -24,56 +24,66 @@ def get_blizzards(grid):
 
 
 def tick(grid):
+    global best_time, path_time, queue
+
     m = len(grid)
     n = len(grid[0])
 
     start = (0, 1)
     end = (m - 1, n - 2)
-    maps = prebuild_maps(lcm(m - 2, n - 2), grid)
+    cycles = lcm(m - 2, n - 2)
+    maps = prebuild_maps(cycles, grid)
 
-    def get_next_moves(E):
-        i, j = E
-        return [
-            (i, j + 1),
-            (i + 1, j),
-            (i, j - 1),
-            (i - 1, j)
-        ]
-    t = 0
+    minute = 0
     queue = deque()
-    queue.append((start, t))
+    best_time = 1e9
+    path_time = defaultdict(lambda: float('inf'))
+    path_time[(start, minute)] = 0
+
+    queue.append((start, minute))
+
+    def move(x, y, t, best_ellapsed_time):
+        global best_time, path_time, queue
+        next_position = (x, y)
+        if next_position != start and next_position != end:
+            if x <= 0 or y <= 0 or x >= m - 1 or y >= n - 1:
+                return
+        if t >= cycles:
+            t = 0
+
+        new_time = best_ellapsed_time + 1
+        if new_time >= best_time:
+            return
+
+        map = maps[t]
+        if map[x][y] != '.':
+            return
+        if new_time < path_time[(next_position, t)]:
+            path_time[(next_position, t)] = new_time
+            queue.append((next_position, t))
+
+        if next_position == end and new_time < best_time:
+            best_time = new_time
 
     while len(queue) > 0:
+        current_position, minute = queue.popleft()
+        if current_position == end:
+            continue
 
-        # colliding_blizzards = defaultdict(lambda: set())
-        E, t = queue.popleft()
-        map = maps[(t + 1) % len(maps)]
-        # show(map)
+        best_ellapsed_time = path_time[(current_position, minute)]
 
-        for move in get_next_moves(E):
-            if move == end:
-                print('Solution 1 -> Minute', t + 1)
-                map[end[0]][end[1]] = 'E'
-                show(map)
-                return
+        if best_ellapsed_time >= best_time:
+            continue
 
-        if map[E[0]][E[1]] == '.':
-            queue.append((E, t + 1))
+        x, y = current_position
 
-        for move in get_next_moves(E):
-            next_row, next_col = move
-            if next_row >= 0 and next_col >= 0 and next_row < m and next_col < n and map[next_row][next_col] == '.':
-                # if len(colliding_blizzards[E]) == 0:
-                #     map[E[0]][E[1]] = '.'
-                # map[next_row][next_col] = 'E'
-                E = move
-                queue.append((move, t + 1))
+        move(x, y, minute + 1, best_ellapsed_time)  # stay at same position
+        move(x, y - 1, minute + 1, best_ellapsed_time)  # north
+        move(x + 1, y, minute + 1, best_ellapsed_time)  # right
+        move(x, y + 1, minute + 1, best_ellapsed_time)  # south
+        move(x - 1, y, minute + 1, best_ellapsed_time)  # left
 
-        # print()
-        t += 1
-        # print('Minute ', t)
-        # print()
-        # show(map)
+    print('Solution 1', best_time)
 
 
 def show(grid):
@@ -82,7 +92,6 @@ def show(grid):
 
 
 def prebuild_maps(cycles, grid):
-
     maps = [deepcopy(grid)]
     blizzards = get_blizzards(grid)
 
@@ -120,12 +129,7 @@ def prebuild_maps(cycles, grid):
                 else:
                     grid[i][j] = str(len(colliding_blizzards[key]))
         maps.append(deepcopy(grid))
-
-    # for t in range(cycles):
-    #     print('Minute ', t)
-    #     print()
-    #     show(maps[t])
-    #     print()
+        print('Building map', _, '/', cycles)
     return maps
 
 
