@@ -1,4 +1,5 @@
-from collections import defaultdict
+from collections import defaultdict, deque
+from copy import deepcopy
 
 
 file = open('day24/input.txt', 'r')
@@ -22,7 +23,7 @@ def get_blizzards(grid):
 
 
 def tick(grid):
-    blizzards = get_blizzards(grid)
+    bliz = get_blizzards(grid)
     blizzard_direction = {
         '>': (1, 0),
         'v': (0, 1),
@@ -31,14 +32,33 @@ def tick(grid):
     }
     m = len(grid)
     n = len(grid[0])
-    for t in range(18):
+    print('Rows', m)
+    print('Cols', n)
+    start = (0, 1)
+    end = (m - 1, n - 2)
+
+    def get_next_moves(E):
+        i, j = E
+        return [
+            (i, j + 1),
+            (i + 1, j),
+            (i, j - 1),
+            (i - 1, j)
+        ]
+    t = 0
+    queue = deque()
+    queue.append((start, deepcopy(grid), deepcopy(bliz), t))
+
+    while len(queue) > 0:
+
         colliding_blizzards = defaultdict(lambda: set())
+        E, map, blizzards, t = queue.popleft()
 
         for i in range(len(blizzards)):
             bi, bj, direction = blizzards[i]
             x, y = blizzard_direction[direction]
-            grid[bi][bj] = '.'
-            if grid[bi + y][bj + x] == '#':
+            map[bi][bj] = '.'
+            if map[bi + y][bj + x] == '#':
                 bi = (bi + 3 * y) % m
                 bj = (bj + 3 * x) % n
             else:
@@ -53,14 +73,33 @@ def tick(grid):
                 continue
             i, j = key
             if len(colliding_blizzards[key]) == 1:
-                grid[i][j] = list(colliding_blizzards[key])[0]
+                map[i][j] = list(colliding_blizzards[key])[0]
             else:
-                grid[i][j] = str(len(colliding_blizzards[key]))
+                map[i][j] = str(len(colliding_blizzards[key]))
+
+        for move in get_next_moves(E):
+            if move == end:
+                print('Solution 1 -> Minute', t + 1)
+                map[E[0]][E[1]] = 'E'
+                show(map)
+                return
+        if len(colliding_blizzards[E]) == 0:
+            queue.append((E, deepcopy(map), deepcopy(blizzards), t + 1))
+
+        for move in get_next_moves(E):
+            next_row, next_col = move
+            if next_row >= 0 and next_col >= 0 and next_row < m and next_col < n and map[next_row][next_col] == '.':
+                if len(colliding_blizzards[E]) == 0:
+                    map[E[0]][E[1]] = '.'
+                map[next_row][next_col] = 'E'
+                E = move
+                queue.append((move, deepcopy(map), deepcopy(blizzards), t + 1))
 
         print()
-        print('Minute ', t + 1)
+        t += 1
+        print('Minute ', t)
         print()
-        show(grid)
+        # show(map)
 
 
 def show(grid):
@@ -70,6 +109,8 @@ def show(grid):
 
 grid = parse_input(lines)
 
+print('Initial State:')
 show(grid)
+print()
 
 tick(grid)
