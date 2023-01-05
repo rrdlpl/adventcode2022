@@ -23,7 +23,7 @@ def get_blizzards(grid):
 
 
 def tick(start, end, t):
-    global best_time, path_time, queue
+    global best_time
     print('Start', start)
     print('End', end)
     minute = t
@@ -44,7 +44,7 @@ def tick(start, end, t):
         ]
 
     def move(next_position, t, best_ellapsed_time):
-        global best_time, path_time, queue
+        global best_time
         x, y = next_position
 
         if next_position != start and next_position != end:
