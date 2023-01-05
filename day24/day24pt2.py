@@ -97,8 +97,6 @@ def prebuild_maps(cycles, grid):
         '<': (-1, 0),
         '^': (0, -1)
     }
-    m = len(grid)
-    n = len(grid[0])
 
     colliding_blizzards = defaultdict(lambda: set())
     for i in range(len(grid)):
