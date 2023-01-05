@@ -42,9 +42,20 @@ def tick(grid):
 
     queue.append((start, minute))
 
-    def move(x, y, t, best_ellapsed_time):
+    def get_next_moves(current_position):
+        x, y = current_position
+        return [
+            (x, y),
+            (x, y - 1),
+            (x + 1, y),
+            (x, y + 1),
+            (x - 1, y)
+        ]
+
+    def move(next_position, t, best_ellapsed_time):
         global best_time, path_time, queue
-        next_position = (x, y)
+        x, y = next_position
+
         if next_position != start and next_position != end:
             if x <= 0 or y <= 0 or x >= m - 1 or y >= n - 1:
                 return
@@ -75,13 +86,8 @@ def tick(grid):
         if best_ellapsed_time >= best_time:
             continue
 
-        x, y = current_position
-
-        move(x, y, minute + 1, best_ellapsed_time)  # stay at same position
-        move(x, y - 1, minute + 1, best_ellapsed_time)  # north
-        move(x + 1, y, minute + 1, best_ellapsed_time)  # right
-        move(x, y + 1, minute + 1, best_ellapsed_time)  # south
-        move(x - 1, y, minute + 1, best_ellapsed_time)  # left
+        for next_position in get_next_moves(current_position):
+            move(next_position, minute + 1, best_ellapsed_time)
 
     print('Solution 1', best_time)
 
