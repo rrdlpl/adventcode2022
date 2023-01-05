@@ -99,10 +99,9 @@ def prebuild_maps(cycles, grid):
     }
 
     colliding_blizzards = defaultdict(lambda: set())
-    for i in range(len(grid)):
-        for j in range(len(grid[0])):
-            if grid[i][j] != '.' and grid[i][j] != '#':
-                colliding_blizzards[(i, j)].add(grid[i][j])
+
+    for i, j, direction in blizzards:
+        colliding_blizzards[(i, j)].add(direction)
 
     maps.append(colliding_blizzards)
 
