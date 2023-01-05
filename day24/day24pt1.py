@@ -36,7 +36,7 @@ def tick(grid):
     minute = 0
     queue = deque()
     best_time = 1e9
-    path_time = defaultdict(lambda: float('inf'))
+    path_time = defaultdict(lambda: 1e9)
     path_time[(start, minute)] = 0
 
     queue.append((start, minute))
@@ -97,7 +97,6 @@ def show(grid):
 
 
 def prebuild_maps(cycles, grid):
-
     maps = []
     blizzards = get_blizzards(grid)
 
