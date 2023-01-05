@@ -1,5 +1,4 @@
 from collections import defaultdict, deque
-from copy import deepcopy
 from math import lcm
 
 
@@ -67,7 +66,7 @@ def tick(grid):
             return
 
         map = maps[t]
-        if map[x][y] != '.':
+        if len(map[(x, y)]) > 0:
             return
         if new_time < path_time[(next_position, t)]:
             path_time[(next_position, t)] = new_time
@@ -98,7 +97,8 @@ def show(grid):
 
 
 def prebuild_maps(cycles, grid):
-    maps = [deepcopy(grid)]
+
+    maps = []
     blizzards = get_blizzards(grid)
 
     blizzard_direction = {
@@ -110,12 +110,19 @@ def prebuild_maps(cycles, grid):
     m = len(grid)
     n = len(grid[0])
 
+    colliding_blizzards = defaultdict(lambda: set())
+    for i in range(len(grid)):
+        for j in range(len(grid[0])):
+            if grid[i][j] != '.' and grid[i][j] != '#':
+                colliding_blizzards[(i, j)].add(grid[i][j])
+
+    maps.append(colliding_blizzards)
+
     for _ in range(cycles):
         colliding_blizzards = defaultdict(lambda: set())
         for i in range(len(blizzards)):
             bi, bj, direction = blizzards[i]
             x, y = blizzard_direction[direction]
-            grid[bi][bj] = '.'
             if grid[bi + y][bj + x] == '#':
                 bi = (bi + 3 * y) % m
                 bj = (bj + 3 * x) % n
@@ -125,16 +132,7 @@ def prebuild_maps(cycles, grid):
 
             colliding_blizzards[(bi, bj)].add(direction)
             blizzards[i] = (bi, bj, direction)
-
-            for key in colliding_blizzards:
-                if len(colliding_blizzards[key]) == 0:
-                    continue
-                i, j = key
-                if len(colliding_blizzards[key]) == 1:
-                    grid[i][j] = list(colliding_blizzards[key])[0]
-                else:
-                    grid[i][j] = str(len(colliding_blizzards[key]))
-        maps.append(deepcopy(grid))
+        maps.append(colliding_blizzards)
         print('Building map', _, '/', cycles)
     return maps
 
