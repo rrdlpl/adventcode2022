@@ -106,8 +106,6 @@ def get_max_geode(time_left, initial_resources, initial_robots, blueprint):
 
     queue.append((initial_resources, initial_robots, time_left))
 
-    max_geode_robots = 0
-
     while queue:
         resources, robots, time_left = queue.popleft()
         ore_robots, clay_robots, obsidian_robots, geode_robots = robots
@@ -138,7 +136,7 @@ def get_max_geode(time_left, initial_resources, initial_robots, blueprint):
             continue
 
         for robot_type in ['obsidian', 'clay', 'ore']:
-            if robot_map[robot_type] <= max_robots[robot_type] and can_build_robot(blueprint, robot_type, resources):
+            if robot_map[robot_type] < max_robots[robot_type] and can_build_robot(blueprint, robot_type, resources):
                 next_resources = build_robot(blueprint, robot_type, resources)
                 next_resources = collect_minerals(next_resources, robots)
                 next_robots = add_robot(robots, robot_type)
@@ -151,7 +149,7 @@ def get_max_geode(time_left, initial_resources, initial_robots, blueprint):
     return max_geodes
 
 
-file = open('day19/test.txt', 'r')
+file = open('day19/input.txt', 'r')
 lines = file.readlines()
 
 
