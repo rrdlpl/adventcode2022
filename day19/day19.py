@@ -74,11 +74,9 @@ def get_max_costs(blueprint):
 
 
 def part_one(blueprints):
-    time = 32
     initial_resources = (0, 0, 0, 0)
     initial_robots = (1, 0, 0, 0)
 
-    geode = None
     quality_level = 0
 
     part_two = 1
@@ -106,17 +104,17 @@ def get_max_geode(time_left, initial_resources, initial_robots, blueprint):
     queue.append((initial_resources, initial_robots, time_left))
 
     while queue:
-        resources, robots, time_left = queue.popleft()
-        ore_robots, clay_robots, obsidian_robots, geode_robots = robots
+        current_resources, current_robots, time_left = queue.popleft()
+        ore_robots, clay_robots, obsidian_robots, geode_robots = current_robots
 
         robot_map = {
             'ore': ore_robots,
             'clay': clay_robots,
             'obsidian': obsidian_robots
         }
-        _, _, _, geodes = resources
+        _, _, _, geodes = current_resources
 
-        visited.add(robots)
+        visited.add(current_robots)
 
         if time_left == 1:
             max_geodes = max(max_geodes, geodes + geode_robots * time_left)
@@ -124,26 +122,27 @@ def get_max_geode(time_left, initial_resources, initial_robots, blueprint):
 
         max_geodes = max(max_geodes, geodes + geode_robots * time_left)
 
-        if obsidian_robots > 0 and can_build_robot(blueprint, 'geode', resources):
-            next_resources = build_robot(blueprint, 'geode', resources)
+        if obsidian_robots > 0 and can_build_robot(blueprint, 'geode', current_resources):
+            new_resources = build_robot(blueprint, 'geode', current_resources)
 
-            next_resources = collect_minerals(next_resources, robots)
-            next_robots = add_robot(robots, 'geode')
+            new_resources = collect_minerals(new_resources, current_robots)
+            new_robots = add_robot(current_robots, 'geode')
 
-            if next_robots not in visited:
-                queue.append((next_resources, next_robots, time_left - 1))
+            if new_robots not in visited:
+                queue.append((new_resources, new_robots, time_left - 1))
             continue
 
         for robot_type in ['obsidian', 'clay', 'ore']:
-            if robot_map[robot_type] < max_robots[robot_type] and can_build_robot(blueprint, robot_type, resources):
-                next_resources = build_robot(blueprint, robot_type, resources)
-                next_resources = collect_minerals(next_resources, robots)
-                next_robots = add_robot(robots, robot_type)
-                if next_robots not in visited:
-                    queue.append((next_resources, next_robots, time_left - 1))
+            if robot_map[robot_type] < max_robots[robot_type] and can_build_robot(blueprint, robot_type, current_resources):
+                new_resources = build_robot(
+                    blueprint, robot_type, current_resources)
+                new_resources = collect_minerals(new_resources, current_robots)
+                new_robots = add_robot(current_robots, robot_type)
+                if new_robots not in visited:
+                    queue.append((new_resources, new_robots, time_left - 1))
 
-        next_resources = collect_minerals(resources, robots)
-        queue.append((next_resources, robots, time_left - 1))
+        new_resources = collect_minerals(current_resources, current_robots)
+        queue.append((new_resources, current_robots, time_left - 1))
 
     return max_geodes
 
