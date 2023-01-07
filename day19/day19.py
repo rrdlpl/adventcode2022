@@ -92,7 +92,6 @@ def part_one(blueprints):
             24, initial_resources, initial_robots, blueprints[id])
         quality_level += part_one * id
 
-    print('Solution one', part_one)
     print('Solution two', part_two)
     return quality_level
 
