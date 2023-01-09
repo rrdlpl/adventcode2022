@@ -101,13 +101,76 @@ def part_one(valves):
     return bfs('AA', tuple(opened), 30)
 
 
+def part_two(valves):
+    opened = [0] * len(valves)
+    for v in valves:
+        if valves[v].rate == 0:
+            opened[valves[v].index] = 1
+    last_opened = None
+
+    def bfs(source, opened_valves, time):
+        queue = deque()
+        queue.append((source, tuple(opened_valves), time, 0))
+        max_flow = 0
+        visited = set()
+
+        while queue:
+            s, opened_valves, time_left, current_flow = queue.popleft()
+
+            if current_flow == 1567:
+                nonlocal last_opened
+                print(opened_valves, time_left)
+                last_opened = opened_valves
+                # queue.append((s, opened_valves, time_left, current_flow))
+
+            if time_left == 1:
+                max_flow = max(max_flow, current_flow)
+                continue
+
+            opened_valves = list(opened_valves)
+            max_flow = max(max_flow, current_flow)
+
+            source_index = valves[s].index
+            if opened_valves[source_index] == 1:
+                current_opened_valves = tuple(opened_valves)
+
+                for next_valve in valves[s].tunnels:
+                    if (next_valve, current_opened_valves, current_flow) not in visited:
+                        queue.append((next_valve, current_opened_valves,
+                                     time_left - 1, current_flow))
+                        visited.add(
+                            (next_valve, current_opened_valves, current_flow))
+                continue
+
+            without_this_open = tuple(opened_valves)
+            opened_valves[source_index] = 1
+            with_this_open = tuple(opened_valves)
+            new_flow = valves[s].rate * (time_left - 1)
+
+            for next_valve in valves[s].tunnels:
+                if (next_valve, without_this_open, current_flow) not in visited:
+                    queue.append((next_valve, without_this_open,
+                                  time_left - 1, current_flow))
+                    visited.add((next_valve, without_this_open, current_flow))
+
+                if new_flow > 0:
+                    queue.append((next_valve, with_this_open,
+                                  time_left - 2, current_flow + new_flow))
+
+        return max_flow
+    max_flow = bfs('AA', tuple(opened), 26)
+    print('Last openeed', last_opened)
+    max_flow2 = bfs('AA', last_opened, 26)
+    print('Max_flow 2', max_flow2)
+    return max_flow + max_flow2
+
+
 valves = parse_input(lines)
 
 for v in valves:
     valves[v].print_all()
 
-max_flow = part_one(valves)
-print('Solution 1', max_flow)
+max_flow = part_two(valves)
 
 
 print('Solution 2', max_flow)
