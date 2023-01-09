@@ -212,11 +212,7 @@ def part_two():
     while True:
         tetris = Tetris(7)
         tetris.add_air(3)
-        # tetris.instruction = 0
         tetris.throw_shapes(shapes, instructions, i)
-        # print('I am on instruction', tetris.instruction % len(instructions))
-        # print(i,  i * mcd, 'Heighest at ', tetris.heighest,
-        #       'Expected =', estimated * i, 'Missing', (tetris.heighest))
         test.append(abs(tetris.heighest))
 
         if len(test) == 100 + 1:
