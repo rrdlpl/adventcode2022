@@ -1,0 +1,42 @@
+1 Finding cycle 7
+2 Finding cycle 7
+3 Finding cycle 2
+4 Finding cycle 6
+5 Finding cycle 5
+
+6 Finding cycle 4
+7 Finding cycle 7
+8 Finding cycle 7
+9 Finding cycle 7
+10 Finding cycle 2
+
+11 Finding cycle 6
+12 Finding cycle 5
+13 Finding cycle 4
+14 Finding cycle 7
+15 Finding cycle 7
+
+16 Finding cycle 7
+17 Finding cycle 2
+18 Finding cycle 6
+19 Finding cycle 5
+20 Finding cycle 4
+
+21 Finding cycle 7
+22 Finding cycle 7
+23 Finding cycle 7
+24 Finding cycle 2
+25 Finding cycle 6
+
+26 Finding cycle 5
+27 Finding cycle 4
+28 Finding cycle 7
+29 Finding cycle 7
+30 Finding cycle 7
+
+31 Finding cycle 2
+32 Finding cycle 6
+33 Finding cycle 5
+34 Finding cycle 4
+35 Finding cycle 7
+
