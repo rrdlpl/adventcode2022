@@ -129,7 +129,7 @@ def get_max_geode(time_left, initial_resources, initial_robots, blueprint):
             new_robots = add_robot(current_robots, 'geode')
 
             if new_robots not in visited:
-                queue.append((new_resources, new_robots, time_left - 1))
+                queue.appendleft((new_resources, new_robots, time_left - 1))
             continue
 
         for robot_type in ['obsidian', 'clay', 'ore']:
