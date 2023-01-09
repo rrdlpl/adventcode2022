@@ -1,4 +1,4 @@
-from collections import defaultdict, deque
+from collections import Counter, defaultdict, deque
 
 from math import lcm
 import time
@@ -21,7 +21,7 @@ class Tetris:
         self.width = width
         self.resting_rocks = set()
         self.instruction = 0
-        self.heighest = -1
+        self.heighest = 0
         self.y_dict = defaultdict(lambda: 0)
         self.floor = 0
 
@@ -38,26 +38,22 @@ class Tetris:
 
     def add_shape(self, shape, jet_instructions):
         aux = self.heighest
-        if aux == -1:
-            shape.start(2, len(self.stack) - 1)
-        else:
-            shape.start(2, aux + 4)
+
+        shape.start(2, aux + 4)
+        # if aux == -1:
+        #     shape.start(2, len(self.stack) - 1)
+        # else:
+        #     shape.start(2, aux + 4)
 
         length = len(jet_instructions)
 
         while not shape.is_at_rest(self.resting_rocks, self.floor):
-            # self.draw(shape, '#')
-            # self.print()
-            # self.draw(shape, '.')
             if jet_instructions[self.instruction % length] == '<':
                 shape.move_left(0, self.resting_rocks)
             else:
                 shape.move_right(self.width, self.resting_rocks)
 
             shape.fall(self.resting_rocks, self.floor)
-            # self.draw(shape, '#')
-            # self.print()
-            # self.draw(shape, '.')
             self.instruction += 1
 
         for i in range(len(shape.points)):
@@ -74,12 +70,21 @@ class Tetris:
         self.draw(shape, '#')
 
     def throw_shapes(self, shapes, jet_instructions, n):
+        seen = set()
         for i in range(n):
-            if i > 0 and i % 1_000_000 == 0:
-                print(i // 1_000_000, '/', n // 1_000_000)
-
             shape = shapes[i % len(shapes)]
             self.add_shape(shape, jet_instructions)
+            landing = shape.get_landing_position()
+
+            # if (i % 5, jet_instructions[i % n], landing) in seen:
+            #     print('Cycle found at', i)
+            land_x, land_y = landing
+
+            # if (i % 5, jet_instructions[i % len(jet_instructions)], land_x, land_y - self.heighest) in seen:
+            #     print('Cycle found at ', i)
+            #     return
+            # seen.add(
+            #     (i % 5, jet_instructions[i % len(jet_instructions)], land_x, land_y - self.heighest))
 
     def draw(self, shape, char):
         if not DEBUG:
@@ -120,6 +125,11 @@ class Shape:
         for i in range(len(self.points)):
             x, y = self.points[i]
             self.points[i] = (x, y - 1)
+
+    def get_landing_position(self):
+        min_x = min([x for x, _ in self.points])
+        max_y = max([y for _, y in self.points])
+        return (min_x, max_y)
 
     def is_at_rest(self, resting_rocks: set, floor):
         aux = sorted(self.points, key=itemgetter(1))
@@ -170,54 +180,6 @@ cross = Shape([(0, 1), (1, 0), (1, 1), (1, 2), (2, 1)], 'cross')
 shapes = [horizontal_line, cross, L, vertical_line, square]
 
 
-# def part_two():
-#     def formula(shapes, instruction, iterations, x):
-#         print('There are ', len(shapes), ' shapes')
-#         print('There are', len(instruction), ' instructions')
-#         mcd = lcm(len(shapes), len(instruction), x)
-#         print('(mcd)', mcd)
-#         n = iterations // mcd
-#         print('n =', n)
-#         missing = iterations - n * mcd
-#         print('There are ', missing, ' missing')
-#         cycleTetris = Tetris(7)
-#         cycleTetris.add_air(3)
-
-#         cycleTetris.throw_shapes(shapes, instruction, mcd)
-
-#         missingTetris = Tetris(7)
-#         missingTetris.add_air(3)
-#         missingTetris.throw_shapes(shapes, instruction, missing)
-
-#         print('Cycle heighst', cycleTetris.heighest)
-#         print('Missing parts heights', missingTetris.heighest)
-
-#         # + (missing // len(instruction))
-#         # - (iterations // len(instruction))
-#         return (cycleTetris.heighest * n) + (missingTetris.heighest) - (iterations // len(instruction))
-
-#     def test_input():
-#         test = Tetris(7)
-#         test.add_air(3)
-#         test.throw_shapes(
-#             shapes, '>>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>', 2022)
-#         print('Solution 1', test.heighest, 'Expected', 3068)
-#         real = Tetris(7)
-#         real.add_air(3)
-# #        real.throw_shapes(shapes, lines[0], N)
-#         print('Real input solution 1', real.heighest, 3119)
-#         return real.heighest
-
-#     N = 100_000_000_0000
-#     R = test_input()
-# F = formula(shapes, lines[0], N)
-
-# print('Test', formula(
-#     shapes, '>>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>', N) - 1514285714288)
-
-# print('Error ', R, ' - ', F, ' = ', R - F)
-
-
 def part_two():
     def get_board(board):
         strings = []
@@ -225,20 +187,10 @@ def part_two():
         for y in range(1, miny):
             strings.append(''.join(
                 ['#' if (i, y) in board else ' ' for i in range(7)]))
-        #     print()
-        # print("-"*15)
         return strings[::-1]
 
-    def find_cycle(board):
-        key = {}
-        for i,  b in enumerate(board):
-            if b in key:
-                print('Found cycle at', i, b)
-            else:
-                key[b] = b
-
-    instructions = '>>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>'
-    # instructions = lines[0]
+    # instructions = '>>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>'
+    instructions = lines[0]
     mcd = lcm(5, len(instructions))
     n = 100_000_000_0000 // mcd
     missing = 100_000_000_0000 - (n * mcd)
@@ -247,25 +199,41 @@ def part_two():
     print('n', n)
     print('missing', missing)
 
+    i = 2
+
     tetris = Tetris(7)
-    missing_tetris = Tetris(7)
     tetris.add_air(3)
-    missing_tetris.add_air(3)
 
-    tetris.throw_shapes(shapes, instructions, mcd)
+    tetris.throw_shapes(shapes, instructions, 330)
+    print('Part one', tetris.heighest)
+    estimated = tetris.heighest
 
-    board = get_board(tetris.resting_rocks)
-    for b in board:
-        print(b)
+    test = [0]
+    while True:
+        tetris = Tetris(7)
+        tetris.add_air(3)
+        # tetris.instruction = 0
+        tetris.throw_shapes(shapes, instructions, i)
+        # print('I am on instruction', tetris.instruction % len(instructions))
+        # print(i,  i * mcd, 'Heighest at ', tetris.heighest,
+        #       'Expected =', estimated * i, 'Missing', (tetris.heighest))
+        test.append(abs(tetris.heighest))
 
-    # find_cycle(board)
+        if len(test) == 100 + 1:
+            break
 
-    print('Highest before', tetris.heighest)
+        i += 1
 
-    missing_tetris.throw_shapes(shapes, instructions, missing)
-
-    highest = n * (tetris.heighest - 7) + missing_tetris.heighest
-    print('Highest', highest)
+    sum = 0
+    cycle = []
+    for i in range(1, len(test)):
+        # print('Finding cycle', test[i] - test[i - 1])
+        sum += test[i] - test[i - 1]
+        cycle.append(str(test[i] - test[i - 1]))
+        if i % 5 == 0:
+            print('sum += ' + ' + '.join(cycle),
+                  ' # rock', i, 'heighest', test[i])
+            cycle = []
 
 
 part_two()

@@ -1,0 +1,29 @@
+Mcd 40
+n 25000000000
+missing 0
+Part one 4548
+sum += 4 + 2 + 1 + 2 + 1  # rock 5 heighest 10
+sum += 3 + 2 + 2 + 0 + 1  # rock 10 heighest 18
+sum += 3 + 2 + 0 + 2 + 1  # rock 15 heighest 26
+sum += 3 + 3 + 4 + 0 + 1  # rock 20 heighest 37
+sum += 2 + 3 + 0 + 1 + 1  # rock 25 heighest 44
+sum += 3 + 2 + 2 + 0 + 0  # rock 30 heighest 51
+sum += 2 + 3 + 4 + 0 + 1  # rock 35 heighest 61
+sum += 2 + 1 + 2 + 0 + 1  # rock 40 heighest 67
+sum += 2 + 1 + 2 + 0 + 1  # rock 45 heighest 73
+sum += 3 + 2 + 0 + 0 + 1  # rock 50 heighest 79
+sum += 3 + 3 + 4 + 0 + 1  # rock 55 heighest 90
+sum += 2 + 3 + 0 + 1 + 1  # rock 60 heighest 97
+sum += 3 + 2 + 2 + 0 + 0  # rock 65 heighest 104
+sum += 2 + 3 + 4 + 0 + 1  # rock 70 heighest 114
+sum += 2 + 1 + 2 + 0 + 1  # rock 75 heighest 120
+sum += 2 + 1 + 2 + 0 + 1  # rock 80 heighest 126
+sum += 3 + 2 + 0 + 0 + 1  # rock 85 heighest 132
+sum += 3 + 3 + 4 + 0 + 1  # rock 90 heighest 143
+sum += 2 + 3 + 0 + 1 + 1  # rock 95 heighest 150
+sum += 3 + 2 + 2 + 0 + 0  # rock 100 heighest 157
+Sum 157
+Estimated 113700000000000
+Missing 112142857142.85715
+Ans
+Time ellapsed 0.1589810848236084 secs
