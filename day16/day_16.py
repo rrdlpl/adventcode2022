@@ -95,7 +95,9 @@ def part_one(valves):
 
         return max_flow
 
-    return backtrack('AA', 30, set())
+    opened = set()
+    max_flow = backtrack('AA', 30, opened)
+    return max_flow
 
 
 # def part_two(valves, distances):
