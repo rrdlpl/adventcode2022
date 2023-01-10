@@ -181,14 +181,6 @@ shapes = [horizontal_line, cross, L, vertical_line, square]
 
 
 def part_two():
-    def get_board(board):
-        strings = []
-        miny = max(y for x, y in list(board))
-        for y in range(1, miny):
-            strings.append(''.join(
-                ['#' if (i, y) in board else ' ' for i in range(7)]))
-        return strings[::-1]
-
     # instructions = '>>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>'
     instructions = lines[0]
     mcd = lcm(5, len(instructions))
@@ -204,9 +196,8 @@ def part_two():
     tetris = Tetris(7)
     tetris.add_air(3)
 
-    tetris.throw_shapes(shapes, instructions, 330)
+    tetris.throw_shapes(shapes, instructions, 2022)
     print('Part one', tetris.heighest)
-    estimated = tetris.heighest
 
     test = [0]
     while True:
@@ -223,7 +214,6 @@ def part_two():
     sum = 0
     cycle = []
     for i in range(1, len(test)):
-        # print('Finding cycle', test[i] - test[i - 1])
         sum += test[i] - test[i - 1]
         cycle.append(str(test[i] - test[i - 1]))
         if i % 5 == 0:
