@@ -4,7 +4,6 @@ lines = file.readlines()
 
 result = 0
 a = []
-b = []
 
 def is_safe(numbers):
   increasing = numbers[0] < numbers[1]
