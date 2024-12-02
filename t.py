@@ -1,42 +1,32 @@
 class Solution:
-    def numFactoredBinaryTrees(self, arr) -> int:
-        arr.sort()
-        dp = {}
-        nums = {}
-        for i in range(len(arr)):
-            nums[arr[i]] = i
-
-        for i in range(len(arr)):
-            dp[i] = 1
-
-        seen = set()
-
-        def dfs(j):
-            r = 0
-
-            print(j)
-
-            target = arr[j]
-
-            for i in range(len(arr)):
-                if i > j:
-                    break
-                if (arr[i], target // arr[i]) not in seen and target % arr[i] == 0 and (target // arr[i]) in nums:
-                    k = nums[target // arr[i]]
-                    r += dfs(i) + dfs(k)
-                    seen.add((arr[i], target // arr[i]))
-
-            dp[j] += r
-            return dp[j]
-
-        result = 0
-
-        for i in range(len(arr)):
-            result += dfs(i)
-
-        return result
+    def minKBitFlips(self, nums, k: int) -> int:
+       n = len(nums)
+       flips = 0
+       i = 0 
+       while i < n:
+        if nums[i] == 1:
+          i += 1
+          continue
+        if nums[i] == 0:
+          flips += 1
+          tmp = i
+          first_zero = -1
+          while i < tmp + k :
+            if i >= n:
+              return -1
+            nums[i] = 1 - nums[i]
+            if nums[i] == 0 and first_zero == -1:
+              first_zero = i
+            i += 1
+          if first_zero != -1:
+            i = first_zero
+            
+       print(nums)
+       for i in range(n):
+        if nums[i] != 1:
+          return -1
+       return flips
 
 
 sol = Solution()
-
-print('answer', sol.numFactoredBinaryTrees([2, 4]))
+print(sol.minKBitFlips([1, 1, 0], 2))
