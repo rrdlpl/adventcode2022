@@ -3,7 +3,6 @@ file = open('2024/day3/input.txt', 'r')
 lines = file.readlines()
 
 result = 0
-a = []
 
 import re
 
