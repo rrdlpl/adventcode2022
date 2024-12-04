@@ -43,7 +43,7 @@ def countXmas(grid, word):
 
     return count
 
-def count_x_mas_patterns(grid, word):
+def count_x_mas_patterns(grid):
     rows = len(grid)
     cols = len(grid[0])
     count = 0
@@ -74,4 +74,4 @@ def count_x_mas_patterns(grid, word):
     
 print('Solution 1.', countXmas(matrix, 'XMAS'))
 
-print('Solution 2. ', count_x_mas_patterns(matrix, 'MAS'))
+print('Solution 2. ', count_x_mas_patterns(matrix))
