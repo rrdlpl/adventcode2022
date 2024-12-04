@@ -1,10 +1,9 @@
 
+import re
 file = open('2024/day3/input.txt', 'r')
 lines = file.readlines()
 
-result = 0
 
-import re
 
 def extract_and_multiply(data):
     pattern = r'mul\(\d{1,3},\d{1,3}\)'
@@ -20,8 +19,6 @@ def extract_and_multiply(data):
     
     return results
 
-for line in lines:
-    result += extract_and_multiply(line)
+result = extract_and_multiply(''.join(lines))
     
-  
 print('Solution 1.', result)
