@@ -6,8 +6,6 @@ matrix = [list(line.strip()) for line in lines]
 
 print(matrix)
 
-
-
 def countXmas(grid, word):
     def get_neighbors():
         directions = [
@@ -48,11 +46,9 @@ def count_x_mas_patterns(grid):
     cols = len(grid[0])
     count = 0
 
-    for row in range(rows):
-        for col in range(cols):
+    for row in range(1, rows - 1):
+        for col in range(1, cols - 1):
             if grid[row][col] != 'A':
-                continue
-            if row == 0 or row == rows - 1 or col == 0 or col == cols - 1:
                 continue
             text_diag1 = grid[row - 1][col - 1] + grid[row][col] + grid[row + 1][col + 1]
             text_diag2 = grid[row - 1][col + 1] + grid[row][col] + grid[row + 1][col - 1]
