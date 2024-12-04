@@ -44,28 +44,9 @@ def countXmas(grid, word):
     return count
 
 def count_x_mas_patterns(grid, word):
-    def get_neighbors():
-        directions = [
-            (1, 1),  # down-right diagonal
-            (1, -1), # down-left diagonal
-            (-1, 1), # up-right diagonal
-            (-1, -1) # up-left diagonal
-        ]
-        
-        return directions
-    
     rows = len(grid)
     cols = len(grid[0])
     count = 0
-    directions = get_neighbors()
-    word_len = len(word)
-    
-    def search_from(x, y, dx, dy):
-        for i in range(word_len):
-            nx, ny = x + i * dx, y + i * dy
-            if not (0 <= nx < rows and 0 <= ny < cols) or grid[nx][ny] != word[i]:
-                return False
-        return True
 
     for row in range(rows):
         for col in range(cols):
