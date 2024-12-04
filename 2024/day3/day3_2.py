@@ -23,8 +23,6 @@ def extract_and_multiply(data):
     return result
 
 
-
-
 result = extract_and_multiply(''.join(lines))
     
   
