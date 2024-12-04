@@ -4,11 +4,10 @@ lines = file.readlines()
 
 matrix = [list(line.strip()) for line in lines]
 
-print(matrix)
 
-def countXmas(grid, word):
+def part_one(grid, word):
     def get_neighbors():
-        directions = [
+        return [
             (0, 1),  
             (1, 0),  
             (1, 1),  
@@ -18,7 +17,7 @@ def countXmas(grid, word):
             (-1, 1), 
             (-1, -1) 
         ]
-        return directions
+        
     
     directions = get_neighbors()
     rows = len(grid)
@@ -41,7 +40,7 @@ def countXmas(grid, word):
 
     return count
 
-def count_x_mas_patterns(grid):
+def part_two(grid):
     rows = len(grid)
     cols = len(grid[0])
     count = 0
@@ -55,19 +54,8 @@ def count_x_mas_patterns(grid):
             
             if (text_diag1 == 'MAS' or text_diag1 == 'SAM') and (text_diag2 == 'MAS' or text_diag2 == 'SAM'):
                 count += 1
-            
-
     return count 
-
-
-  
-
-   
-
-
-
-
     
-print('Solution 1.', countXmas(matrix, 'XMAS'))
+print('Solution 1.', part_one(matrix, 'XMAS'))
 
-print('Solution 2. ', count_x_mas_patterns(matrix))
+print('Solution 2. ', part_two(matrix))
