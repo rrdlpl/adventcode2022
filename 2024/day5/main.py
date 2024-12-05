@@ -1,61 +1,70 @@
-
-file = open('2024/day5/input.txt', 'r')
-lines = file.readlines()
-
-matrix = [list(line.strip()) for line in lines]
+from functools import cmp_to_key
 
 
-def part_one(grid, word):
-    def get_neighbors():
-        return [
-            (0, 1),  
-            (1, 0),  
-            (1, 1),  
-            (1, -1), 
-            (0, -1), 
-            (-1, 0), 
-            (-1, 1), 
-            (-1, -1) 
-        ]
-        
+file_a = open('2024/day5/input_aa.txt', 'r')
+file_b = open('2024/day5/input_bb.txt', 'r')
+order_lines = file_a.readlines()
+page_number_lines = file_b.readlines()
+
+page_ordering_rules = []
+for line in order_lines:
+    array = line.strip().split('|')
+    page_ordering_rules.append((int(array[0]), int(array[1])))
     
-    directions = get_neighbors()
-    rows = len(grid)
-    cols = len(grid[0])
-    word_len = len(word)
-    count = 0
-
-    def search_from(x, y, dx, dy):
-        for i in range(word_len):
-            nx, ny = x + i * dx, y + i * dy
-            if not (0 <= nx < rows and 0 <= ny < cols) or grid[nx][ny] != word[i]:
-                return False
-        return True
-
-    for row in range(rows):
-        for col in range(cols):
-            for dx, dy in directions:
-                if search_from(row, col, dx, dy):
-                    count += 1
-
-    return count
-
-def part_two(grid):
-    rows = len(grid)
-    cols = len(grid[0])
-    count = 0
-
-    for row in range(1, rows - 1):
-        for col in range(1, cols - 1):
-            if grid[row][col] != 'A':
-                continue
-            text_diag1 = grid[row - 1][col - 1] + grid[row][col] + grid[row + 1][col + 1]
-            text_diag2 = grid[row - 1][col + 1] + grid[row][col] + grid[row + 1][col - 1]
-            
-            if (text_diag1 == 'MAS' or text_diag1 == 'SAM') and (text_diag2 == 'MAS' or text_diag2 == 'SAM'):
-                count += 1
-    return count 
+page_numbers = []
+for line in page_number_lines:
+    line = [int(l) for l in line.strip().split(',')]
+    line =tuple(line)
     
-print('Solution 1.', part_one(matrix, 'XMAS'))
+    page_numbers.append(line)
+     
+print(page_numbers)
 
-print('Solution 2. ', part_two(matrix))
+page_ordering_rules = set(page_ordering_rules)
+def part_one():
+    total = 0
+    for page_number in page_numbers:
+        valid = True
+        for i in range(len(page_number)-1):
+            for j in range(i+1, len(page_number)):
+                if (page_number[j], page_number[i]) in page_ordering_rules:
+                    valid = False
+                    break
+            if not valid:
+                break
+        if valid:
+            total += page_number[len(page_number) // 2]
+    return total
+
+
+def part_two():
+    def compare_func(a, b):
+        if (a, b) in page_ordering_rules:
+            return 1
+        elif (b, a) in page_ordering_rules:
+            return -1
+        else:
+            return 0
+    key = cmp_to_key(compare_func)
+    
+    total = 0
+    for page_number in page_numbers:
+        valid = True
+        for i in range(len(page_number)-1):
+            for j in range(i+1, len(page_number)):
+                if (page_number[j], page_number[i]) in page_ordering_rules:
+                    valid = False
+                    break
+            if not valid:
+                break
+        if not valid:
+            new_order = list(page_number)
+            new_order.sort(key=key)
+            total += new_order[len(new_order) // 2]
+    return total
+
+
+ 
+ 
+print('Solution 1', part_one())
+print('Solution 2', part_two())
