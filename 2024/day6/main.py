@@ -21,8 +21,6 @@ def part_one():
     directions = [(0, -1), (1, 0), (0, 1), (-1, 0)]
     current_direction = 0
     while 0 <= x < len(lines) and 0 <= y < len(lines[0]):
-      if (x, y) in visited:
-        print('aa')
       visited.add((x, y))
       dx, dy = directions[current_direction]
       new_x, new_y = x + dy, y + dx
@@ -49,8 +47,6 @@ def part_two():
         directions = [(0, -1), (1, 0), (0, 1), (-1, 0)]
         current_direction = 0
         while 0 <= x < len(lines) and 0 <= y < len(lines[0]):
-          if (x, y) in visited:
-            print('aa')
           dx, dy = directions[current_direction]
           new_x, new_y = x + dy, y + dx
           if (new_x, new_y) in obstacles:
