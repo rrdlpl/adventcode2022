@@ -1,3 +1,6 @@
+import time
+
+
 file = open('2024/day6/input.txt', 'r')
 lines = file.readlines()
 
@@ -69,4 +72,8 @@ def part_two():
 
 
 print('Solution 1', part_one())
-print('Solution 2', part_two())
+
+start = time.time()
+solution_2 = part_two()
+end = time.time()
+print('Solution 2', solution_2, end - start, 'sec')
