@@ -3,6 +3,7 @@ lines = file.readlines()
 
 start_point = None
 obstacles = set()
+visited_in_part_one = set()
 for i, line in enumerate(lines):
   for j, char in enumerate(line.strip()):
     if char == '.':
@@ -22,6 +23,7 @@ def part_one():
     current_direction = 0
     while 0 <= x < len(lines) and 0 <= y < len(lines[0]):
       visited.add((x, y))
+      visited_in_part_one.add((x, y))
       dx, dy = directions[current_direction]
       new_x, new_y = x + dy, y + dx
       if (new_x, new_y) in obstacles:
@@ -35,8 +37,7 @@ def part_one():
 
 def part_two():
   total_cycles = 0
-  for x in range(len(lines)):
-    for y in range(len(lines[0])):
+  for x, y in visited_in_part_one: 
       if (x, y) in obstacles:
         continue
       obstacles.add((x, y))
