@@ -42,13 +42,10 @@ def part_one():
 
 
 def part_two():
-  visited = set()
   directions = [(0, -1), (1, 0), (0, 1), (-1, 0)]
   
   result = 0
   def dfs(x, y):
-    visited.add((x, y))
-    
     if grid[x][y] == 9:
       nonlocal result
       result += 1
@@ -64,7 +61,6 @@ def part_two():
   for i in range(len(grid)):
     for j in range(len(grid[0])):
       if grid[i][j] == 0:
-        visited = set()
         result = 0
         dfs(i, j)
         total += result
