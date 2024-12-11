@@ -35,12 +35,13 @@ def part_two(blinking_times):
     if blinking_times == 0:
       return 1
     result = 0 
+    stone_str = str(stone)
     if stone == 0:
       result = blink(1, blinking_times - 1)
-    elif (len(str(stone)) % 2 == 0):
-      mid = len(str(stone)) // 2
-      first_half = int(str(stone)[:mid])
-      second_half = int(str(stone)[mid:])
+    elif (len(stone_str) % 2 == 0):
+      mid = len(stone_str) // 2
+      first_half = int(stone_str[:mid])
+      second_half = int(stone_str[mid:])
       result += blink(first_half, blinking_times - 1) + blink(second_half, blinking_times - 1)
     else:
       result += blink(stone * 2024, blinking_times - 1)
