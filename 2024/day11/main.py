@@ -14,9 +14,10 @@ def part_one(blinking_times):
       if stones[j] == '0':
         new_stones.append('1')
       elif len(stones[j]) % 2 == 0:
-        mid = len(str(stones[j])) // 2
-        first_half = int(str(stones[j])[:mid])
-        second_half = int(str(stones[j])[mid:])
+        stone_str = str(stones[j])
+        mid = len(stone_str) // 2
+        first_half = int(stone_str[:mid])
+        second_half = int(stone_str[mid:])
         new_stones.append(str(int(first_half)))
         new_stones.append(str(int(second_half)))
       else:
@@ -24,7 +25,7 @@ def part_one(blinking_times):
 
     stones = new_stones.copy()
     # print(' '.join(stones))
-  return len(stones)    
+  return len(stones)              
   
 
 def part_two(blinking_times):
