@@ -62,13 +62,13 @@ def part_two():
     px, py = p
     return (by * px - bx * py) / (by * ax - bx * ay)
   
-  def calc_b(a, b, p):
-    ax, ay = a
-    bx, by = b
-    px, py = p
-    num = (by * ax - bx * ay) * px - (by * px - bx * py) * ax
-    denom = bx * (by * ax - bx * ay)
-    return num / denom
+  def calc_b(ac, a, b, p):
+    _, ay = a
+    _, by = b
+    _, py = p
+    num = py - ay * ac
+    # denom = bx * (by * ax - bx * ay)
+    return num / by
   
   buttons_a, buttons_b, prizes = parse_input()
   tokens = 0
@@ -80,11 +80,11 @@ def part_two():
     p = (prizes[i][0] , prizes[i][1])
 
     a_press = calc_a(a, b, p)
-    b_press = calc_b(a, b, p)
+    b_press = calc_b(a_press,a, b, p)
     
     p_offset = (prizes[i][0] + offset, prizes[i][1] + offset)    
     a_press_offset = calc_a(a, b, p_offset)
-    b_press_offset = calc_b(a, b, p_offset)
+    b_press_offset = calc_b(a_press_offset, a, b, p_offset)
     
     if a_press.is_integer() and b_press.is_integer() and a_press >= 0 and b_press >= 0 and a_press <= 100 and b_press <= 100:
       tokens_partone_check += (a_press * 3) + b_press
