@@ -67,47 +67,48 @@ def part_one():
 
 
 def part_two():
-  grid = parse_input()
-  start, end = init(grid)
-  min_score, _ = part_one()
-  
-  print('Solution 1', min_score)
-  all_paths = set()
-  scores = {(start, 0): 0}
-  path = [(start, 0)]
-  
-  visited = set()
-  visited.add(start)
-  directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    grid = parse_input()
+    start, end = init(grid)
+    min_score, _ = part_one()
+    scores = {start: 0}
+    visited = set()
+    visited.add(start)
+    all_paths = set()
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
 
-  def can_move(row, col):
-    return 0 <= row < len(grid) and 0 <= col < len(grid[0]) and grid[row][col] != '#'
+    def can_move(row, col):
+        return 0 <= row < len(grid) and 0 <= col < len(grid[0]) and grid[row][col] != '#'
 
-  def backtrack(current_score):
-    current_node, current_direction = path[-1]
-    if current_score == min_score and current_node == end:
-      all_paths.update(visited)
-    elif current_score > min_score:
-      return
+    def backtrack(current_score, current_node, current_direction):
+        if current_score > min_score:
+            return
+        if current_score == min_score and current_node == end:
+            all_paths.update(visited)
+            return
+        row, col = current_node
+        for next_direction in [
+            current_direction,
+            (current_direction + 1) % 4,
+            (current_direction - 1) % 4
+        ]:
+            dr, dc = directions[next_direction]
+            next_row, next_column = row + dr, col + dc
+            if can_move(next_row, next_column) and (next_row, next_column) not in visited:
+                next_node = (next_row, next_column), next_direction
+                new_score = current_score + (1000 if next_direction != current_direction else 0) + 1
+                if next_node not in scores or new_score <= scores[next_node]:
+                    scores[next_node] = new_score
+                    visited.add((next_row, next_column))
+                    backtrack(new_score, next_node[0], next_node[1])
+                    visited.remove((next_row, next_column))
 
-    row, col = current_node
+    backtrack(0, start, 0)
     
-    for next_direction, extra_score in [(current_direction, 0), ((current_direction + 1) % 4, 1000), ((current_direction - 1) % 4, 1000)]:
-      dr, dc = directions[next_direction]
-      next_row, next_column = row + dr, col + dc
-      if can_move(next_row, next_column) and (next_row, next_column) not in visited:
-          next_node = ((next_row, next_column), next_direction)
-          new_score = current_score + extra_score + 1
-          if next_node not in scores or new_score <= scores[next_node]:
-              scores[next_node] = new_score
-              visited.add((next_row, next_column))
-              path.append(next_node)
-              backtrack(new_score)
-              visited.remove((next_row, next_column))
-              path.pop()
-
-  backtrack(0)
-  return len(all_paths)
+    for i, j in all_paths:
+        grid[i][j] = 'O'
+    render_grid(grid)
+    
+    return len(all_paths)
 
 
   
