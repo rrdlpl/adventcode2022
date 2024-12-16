@@ -1,5 +1,8 @@
 
 
+from collections import deque
+
+
 def parse_input():
   file = open('2024/day15/input_a.txt', 'r')
   instructions = open('2024/day15/instructions.txt', 'r')
@@ -114,34 +117,67 @@ def init_2(map):
         return (i, j)
   return None
 
-def move_boxes_horizontally(grid, current_position, direction):
-   dx, dy = direction
-   if dx != 0:  
-      row, col = current_position
-      new_row, new_col, = row + dy, col + dx
-      last_col = new_col
-            
-      while grid[row][last_col] != '.' and grid[row][last_col] != '#':
-        last_col += dx
-      if grid[row][last_col] == '#':
-          return
-      shift_cols = last_col
-      while shift_cols != col - dx:
-          grid[row][shift_cols] = grid[row][shift_cols - dx]
-          shift_cols -= dx
-      grid[row][col] = '.'
-      col = new_col
-      current_position = (new_row, new_col)
+def move_boxes_horizontally(map, current_position, direction):
+    dx, dy = direction
+    row, col = current_position
+    new_row, new_col, = row + dy, col + dx
+    last_col = new_col
+          
+    while map[row][last_col] != '.' and map[row][last_col] != '#':
+      last_col += dx
+    if map[row][last_col] == '#':
+        return current_position
+    shift_cols = last_col
+    while shift_cols != col - dx:
+        map[row][shift_cols] = map[row][shift_cols - dx]
+        shift_cols -= dx
+    map[row][col] = '.'
+    col = new_col
+    
+    current_position = (new_row, new_col)
       
-   return current_position
+    return current_position
 
-def move_boxes_vertically(map, current_position, dy):
-  return 0
+def move_boxes_vertically(map, current_position, direction):
+  row, col = current_position
+  dx, dy = direction
+  new_row, new_col = row + dy, col + dx
+  queue = deque()
+  queue.append((row, col))
+  boxes_to_move = {}
+  boxes_to_move[(new_row, new_col)] = map[new_row][new_col]
+  while queue:
+      current_row, current_col = queue.popleft()
+      nr, nc = current_row + dy, current_col + dx
+      if map[nr][nc] == '#':
+          return current_position
+      if map[nr][nc] == '.':
+          continue
+      boxes_to_move[(nr, nc)] = map[nr][nc]
+      if map[nr][nc] == '[':
+          queue.append((nr, nc))
+          queue.append((nr, nc + 1))
+          boxes_to_move[(nr, nc + 1)] = map[nr][nc + 1]
+      elif map[nr][nc] == ']':
+          queue.append((nr, nc))
+          queue.append((nr, nc - 1))
+          boxes_to_move[(nr, nc - 1)] = map[nr][nc - 1]
+   
 
   
-  
+  if boxes_to_move:
+      for ((i, j), _) in boxes_to_move.items():
+          map[i][j] = '.'
+      for ((i, j), tile) in boxes_to_move.items():
+          map[i + dy][j + dx] = tile
+
+      map[row][col] = '.'
+      map[new_row][col] = '@'
+      current_position = (new_row, new_col)
+  # print('Current position',   current_position)
+  return current_position
+
 def part_two():
-  
   grid, instructions = parse_input()
   map = resize_map(grid)
   current_position = init_2(map)
@@ -149,32 +185,40 @@ def part_two():
 
   for instruction in instructions:
     dx, dy = move(instruction)
-    print("Move: ", instruction, "\n")
+    # print("Move: ", instruction, "\n", current_position)
+    
     next_position = (current_position[0] + dy, current_position[1] + dx)
     
     if map[next_position[0]][next_position[1]] == '#':
-      render_grid(map)
+      # render_grid(map)
       continue
     if map[next_position[0]][next_position[1]] == '.':
       map[current_position[0]][current_position[1]] = '.'
       map[next_position[0]][next_position[1]] = '@'
       current_position = next_position
-      render_grid(map)
+      # render_grid(map)
       continue
     if instruction == '>' or instruction == '<':
       current_position = move_boxes_horizontally(map, current_position, (dx, dy))
-      render_grid(map)
+      if current_position == None: 
+        print('alert hori', current_position )
+      # render_grid(map)
       continue
-    # if instruction == 'v' or instruction == '^':
-    #   current_position = move_boxes_vertically(map, current_position, dy)
-    #   render_grid(map)
-    #   continue
+    if instruction == 'v' or instruction == '^':
+      current_position = move_boxes_vertically(map, current_position, (dx, dy))
+      if current_position == None: 
+        print('alert vert', current_position )
+      # render_grid(map)
+      continue
 
+  answer = 0
+  for i in range(len(map)):
+    for j in range(len(map[0])):
+      if map[i][j] == '[':
+        answer += (i * 100) + j
         
-
-    
   
-  return 0
+  return answer
 
 
 # print('Solution 1.', part_one())
