@@ -114,85 +114,29 @@ def init_2(map):
         return (i, j)
   return None
 
-def move_boxes_horizontally(map, current_position, dx):
-  x, y = current_position
-  possible_empty_box = (x, y + dx * 3)
-  empty_box = None
-  if 0 <= possible_empty_box[0] < len(map) and 0 <= possible_empty_box[1] < len(map[0]) and map[possible_empty_box[0]][possible_empty_box[1]] == '.':
-    empty_box = possible_empty_box
-  
-  possible_empty_box = (x, y + dx * 5)
-  if empty_box is None and 0 <= possible_empty_box[0] < len(map) and 0 <= possible_empty_box[1] < len(map[0]) and map[possible_empty_box[0]][possible_empty_box[1]] == '.': 
-    empty_box = possible_empty_box
-  
-  if empty_box is None:
-    return current_position
-  
-  if dx > 0:
-    for j in range(empty_box[1], y - 1, -1):
-      map[x][j] = map[x][j - 1]
-    map[x][y] = '.'
-    current_position = (x, y + dx)
-    map[x][current_position[1]] = '@'
-  else:
-    for j in range(empty_box[1], y + 1):
-      map[x][j] = map[x][j + 1]
-    map[x][y] = '.'
-    current_position = (x, y + dx)
-    map[x][current_position[1]] = '@'
-  
-  return current_position
+def move_boxes_horizontally(grid, current_position, direction):
+   dx, dy = direction
+   if dx != 0:  
+      row, col = current_position
+      new_row, new_col, = row + dy, col + dx
+      last_col = new_col
+            
+      while grid[row][last_col] != '.' and grid[row][last_col] != '#':
+        last_col += dx
+      if grid[row][last_col] == '#':
+          return
+      shift_cols = last_col
+      while shift_cols != col - dx:
+          grid[row][shift_cols] = grid[row][shift_cols - dx]
+          shift_cols -= dx
+      grid[row][col] = '.'
+      col = new_col
+      current_position = (new_row, new_col)
+      
+   return current_position
 
 def move_boxes_vertically(map, current_position, dy):
-  def can_move(box):
-    return 0 <= box[0] < len(map) and 0 <= box[1] < len(map[0]) and map[box[0]][box[1]] == '.'
-  x, y = current_position
-  box = (x + dy, y)
-  start_box_y, end_box_y = None, None
-  if map[box[0]][box[1]] == '[':
-    start_box_y = box[1]
-    end_box_y = box[1] + 1
-  else: 
-    start_box_y =  box[1] - 1 
-    end_box_y = box[1]
-    
-  possible_start_box, possible_end_box = (box[0] + dy, start_box_y), (box[0] + dy, end_box_y)
-  empty_start_box = None
-  empty_end_box = None
-  if can_move(possible_start_box) and can_move(possible_end_box):
-    empty_start_box = possible_start_box 
-    empty_end_box = possible_end_box
-    
-  possible_start_box, possible_end_box = (box[0] + dy * 2, start_box_y), (box[0] + dy * 2, end_box_y)
-  if can_move(possible_start_box) and can_move(possible_end_box) and empty_end_box is None and empty_start_box is None:
-    empty_start_box = possible_start_box
-    empty_end_box = possible_end_box
-  
- 
-  if empty_end_box is None and empty_start_box is None:
-    return current_position
-  
-  if dy < 0:
-    # moving up
-    for i in range(empty_start_box[0], x, 1):
-      map[i][empty_start_box[1]] = map[i + 1][empty_start_box[1]]
-    for i in range(empty_end_box[0], x, 1):
-      map[i][empty_end_box[1]] = map[i + 1][empty_end_box[1]]
-    map[current_position[0]][y] = '.'
-    current_position = (current_position[0] + dy, current_position[1])
-    map[current_position[0]][current_position[1]] = '@'
-  else:
-    # moving down
-    for i in range(empty_start_box[0], x, -1):
-      map[i][empty_start_box[1]] = map[i - 1][empty_start_box[1]]
-    for i in range(empty_end_box[0], x, -1):
-      map[i][empty_end_box[1]] = map[i - 1][empty_end_box[1]]
-    map[current_position[0]][y] = '.'
-    current_position = (current_position[0] + dy, current_position[1])
-    map[current_position[0]][current_position[1]] = '@'
-  
-  return current_position
- 
+  return 0
 
   
   
@@ -218,13 +162,13 @@ def part_two():
       render_grid(map)
       continue
     if instruction == '>' or instruction == '<':
-      current_position = move_boxes_horizontally(map, current_position, dx)
+      current_position = move_boxes_horizontally(map, current_position, (dx, dy))
       render_grid(map)
       continue
-    if instruction == 'v' or instruction == '^':
-      current_position = move_boxes_vertically(map, current_position, dy)
-      render_grid(map)
-      continue
+    # if instruction == 'v' or instruction == '^':
+    #   current_position = move_boxes_vertically(map, current_position, dy)
+    #   render_grid(map)
+    #   continue
 
         
 
