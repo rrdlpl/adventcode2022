@@ -13,6 +13,7 @@ class Computer:
     self.pointer = 0
   
   def run(self, program):
+    self.program = ','.join([str(p) for p in program])
     while self.pointer < len(program):
       opcode, operand = program[self.pointer], program[self.pointer + 1]
       if opcode == 0:
@@ -84,7 +85,8 @@ class Computer:
 
   
   def print(self):
-    print(','.join([str(x) for x in self.outs]))
+    # print(','.join([str(x) for x in self.outs]))
+    return ','.join([str(x) for x in self.outs])
 
 a =  729
 b = 0
@@ -145,3 +147,64 @@ print('Solution 1:')
 part_one.print()
 
 #attempt 1: 2,7,2,5,1,2,7,3,7
+
+
+
+part_two_test = Computer(2024, 0, 0)
+part_two_test.run([0,3,5,4,3,0])
+print('')
+print('Part two test: \n')
+part_two_test.print()
+
+A = 1
+
+# for A in range(0, 1000000):
+#   program = [0,3,5,4,3,0]
+#   p2 = Computer(A, 0, 0)
+#   p2.run(program)
+#   if p2.print().endswith('4,3,0'):
+#     print('endswith', A)
+#   if p2.print() == '0,3,5,4,3,0':
+#     print('Solution 2',A)
+#     exit(0)
+    
+
+def find_A(program, stack, n=1):
+    if n > len(program):
+        return min(stack)
+   
+    next_stack = []
+    for num in stack:
+        for i in range(8):
+            A = 8 * num + i
+            p2 = Computer(A, 0, 0)
+            p2.run(program)
+            if p2.outs == program[-n:]:
+                next_stack.append(A)
+        print(next_stack)
+
+    return find_A(program, next_stack, n + 1)
+
+print('Solution 2. Test', find_A([0,3,5,4,3,0], [0])) # 117400
+print('Solution 2. ', find_A([2,4,1,1,7,5,0,3,4,7,1,6,5,5,3,0], [0]))
+  
+
+
+# while left <= right:
+#   mid = (left + right) // 2
+#   part_two_test = Computer(mid, 0, 0)
+#   # part_two_test.run([2,4,1,1,7,5,0,3,4,7,1,6,5,5,3,0])
+#   part_two_test.run([0,3,5,4,3,0])
+
+#   target = part_two_test.program.replace(',', '')
+#   p = part_two_test.print().replace(',', '')
+#   if len(p) == len(target):
+#     print('Solution 2.', mid)
+#     print('Search range', left, right)
+#     # exit(0)
+#     right = mid - 1
+#   if len(p) < len(target):
+#     left = mid + 1
+#   else:
+#     right = mid -1
+  
