@@ -147,8 +147,6 @@ print('')
 print('Part two test: \n')
 part_two_test.print()
 
-A = 1
-
 # for A in range(0, 1000000):
 #   program = [0,3,5,4,3,0]
 #   p2 = Computer(A, 0, 0)
