@@ -1,9 +1,3 @@
-# a = 25358015
-# b= 0
-# c = 0
-
-# program = ""
-
 class Computer:
   def __init__(self, a, b, c):
     self.a = a
@@ -85,7 +79,6 @@ class Computer:
 
   
   def print(self):
-    # print(','.join([str(x) for x in self.outs]))
     return ','.join([str(x) for x in self.outs])
 
 a =  729
@@ -148,8 +141,6 @@ part_one.print()
 
 #attempt 1: 2,7,2,5,1,2,7,3,7
 
-
-
 part_two_test = Computer(2024, 0, 0)
 part_two_test.run([0,3,5,4,3,0])
 print('')
@@ -179,7 +170,7 @@ def find_A(program, stack, n=1):
             A = 8 * num + i
             p2 = Computer(A, 0, 0)
             p2.run(program)
-            if p2.outs == program[-n:]:
+            if p2.outs == program[-n:]: # if last digits match is a good candidate
                 next_stack.append(A)
         print(next_stack)
 
