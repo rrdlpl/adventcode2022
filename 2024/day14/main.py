@@ -23,7 +23,7 @@ def parse_input():
        position = tuple(map(int, match.group(1).split(',')))
        velocity = tuple(map(int, match.group(2).split(',')))
         
-       robots.append(Robot(position, position, velocity))
+       robots.append(Robot(position, velocity))
 
    return robots
 
