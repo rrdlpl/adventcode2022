@@ -4,14 +4,13 @@ from collections import defaultdict, deque
 def parse_input(n, fallen_bytes_size=12):
   file = open('2024/day18/input.txt', 'r')
   lines = file.readlines()
-  
   grid = []
 
   for i in range(n + 1):
     row = list('.' * (n + 1))
     grid.append(row)
 
-  for i in range(0, fallen_bytes_size - 1):
+  for i in range(0, fallen_bytes_size):
     line = lines[i].strip().split(',')
     row, col = int(line[0]), int(line[1])
     grid[col][row] = '#'
@@ -26,7 +25,7 @@ def render_grid(grid):
 
 
 def part_one():  
-  grid = parse_input(70, 1025)
+  grid = parse_input(70, 1024)
   n = len(grid)
   render_grid(grid)
   def can_move(row, col):
@@ -39,17 +38,16 @@ def part_one():
   
     while queue:
       row, col, steps = queue.popleft()
+      if row == n - 1 and col == n - 1:
+        return steps
       for dr, dc in [(0, 1), (1, 0), (0, -1), (-1, 0)]:
         next_row, next_col = row + dr, col + dc
+        
         if not can_move(next_row, next_col): 
           continue
         if visited[(next_row, next_col)] > steps + 1:
             queue.append((next_row, next_col, steps + 1))
             visited[(next_row, next_col)] = steps + 1
-    # print(visited)
-    # for i, j in visited:
-    #   grid[i][j] = 'O'
-    # render_grid(grid)
     return visited[(n - 1, n - 1)]
     
   return bfs()
