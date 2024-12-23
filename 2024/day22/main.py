@@ -1,4 +1,7 @@
 
+from collections import defaultdict
+
+
 class SecretNumberGenerator:
   def __init__(self, secret_number):
     self.secret_number = secret_number
@@ -32,10 +35,23 @@ def calculate_secret_number(secret_number, iterations):
   secret_number_gen = SecretNumberGenerator(secret_number)
   for _ in  range(iterations):
     secret_number_gen.next()
-    # print('secret number' , secret_number_gen.secret_number)
+    print('secret number' , secret_number_gen.secret_number)
     
   return secret_number_gen.secret_number
 
+
+def calculate_prices(secret_number, iterations):
+  secret_number_gen = SecretNumberGenerator(secret_number)
+  prices = [secret_number % 10]
+
+  for _ in  range(iterations):
+    secret_number_gen.next()
+    prices.append(secret_number_gen.secret_number % 10)
+  
+  prices_diff = []
+  for i  in range(len(prices) - 1):
+    prices_diff.append(prices[i + 1] - prices[i])
+  return prices, prices_diff
 def part_one():
   
   secret_numbers = parse_input()
@@ -46,4 +62,28 @@ def part_one():
   return result
 
 
-print('Solution 1.', part_one())
+def get_all_sequences(prices, prices_diff):
+    bananas_map = {}
+    for i in range(len(prices_diff) - 3):
+        sequence = (prices_diff[i], prices_diff[i + 1], prices_diff[i + 2], prices_diff[i + 3])
+        if sequence not in bananas_map:
+            bananas_map[sequence] = prices[i + 4]
+    
+    if len(prices) <= 11:
+      for key in bananas_map:
+        print(key, '= ',  bananas_map[key])
+    return bananas_map  
+  
+def part_two():
+  bananas = defaultdict(lambda: 0)
+  secret_numbers = parse_input()
+  for secret_number in secret_numbers:
+    prices, prices_diff = calculate_prices(secret_number, 10)
+    b = get_all_sequences(prices, prices_diff)
+    for key, value in b.items():
+      bananas[key] += value
+  
+  return max(bananas.values())
+
+# print('Solution 1.', part_one())
+print('Solution 2', part_two())
