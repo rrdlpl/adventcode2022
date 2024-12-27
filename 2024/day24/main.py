@@ -8,14 +8,11 @@ class OperatorParser:
     self.left_key = left[0]
     self.right_key = left[2]
     self.operator = left[1]
-  
-  
-    
+
 def parse_input():
   wire_file = open('2024/day24/input.txt', 'r')
   lines = wire_file.readlines()
   wires = {}
-  
 
   for i in range(0, len(lines)):
     line = lines[i].strip()
@@ -31,7 +28,6 @@ def parse_input():
     line = lines[j].strip()
     operation = OperatorParser(line)
     wires[operation.key] = operation
-  # print(operations)
   return wires
 
 
@@ -91,39 +87,15 @@ def get_in_known_terms(map, key):
    map[parser.key] = result
    return result
   
-def find_swaps(wires, operations):
-  to_solve_keys = []
-  for operation in operations:
-    parser = OperatorParser(operation)
-    wires[parser.key] = parser
-    if parser.key.startswith('z')  :
-        to_solve_keys.append(parser.key) 
-    if parser.key.startswith('z') and parser.operator != 'XOR':
-      print('Wrong gate', parser.key, parser.operation)
-  
-  to_solve_keys.sort()
-  
-  swapps = []
-  in_correct_order = []
-  
-  for key in wires.keys():
-    s = get_in_known_terms(wires, key)
-    swapps.append(key+'= '+s)
-  swapps.sort(key=lambda x: len(x))
-  
-  # for s in swapps:
-  #   print(s)
-  return swapps
-
 
   
 def solve(wires):
   to_solve_keys = []
   for key in wires.keys():
-    # parser = OperatorParser(operation)
-    # wires[parser.key] = parser
+
     if key.startswith('z'):
      to_solve_keys.append(key)
+     
   result = []  
   to_solve_keys.sort(reverse=True)
   
@@ -136,16 +108,12 @@ def part_two():
   wires = parse_input()
   x = []
   y = []
-  s = []
   
-  # ff = find_swaps(wires, operations)
   for key in wires.keys():
     if key.startswith('x'):
       x.append(key)
     elif key.startswith('y'):
       y.append(key)
-    else:
-      s.append(key)
   
   x.sort(reverse=True)
   y.sort(reverse=True)
@@ -155,13 +123,15 @@ def part_two():
   
   actual_value = actual_x + actual_y
   
+  print('X = ', actual_x)
+  print('Y = ', actual_y)
   print('X + Y = ', actual_value)
   
-  swaps = [("qnw", "z15"), ('z20', 'cqr'), ('z37', 'vkg'), ('ncd', 'nfj')]
-  for a,b in swaps:
-    wires[a], wires[b] = wires[b], wires[a]
+  # swaps = [("qnw", "z15"), ('z20', 'cqr'), ('z37', 'vkg'), ('ncd', 'nfj')]
   
   print('    Z = ', binary_to_decimal(solve(wires)))
+  # 01010111111111000101011110011100110010001110000
+  # 01010111101111000100011110011101110010001110000
   
 
 
@@ -173,42 +143,7 @@ def part_two():
 # cqr,ncd,nfj,qnw,vkg,z15,z20,z37
 # cqr,ncd,nfj,qnw,vkg,z15,z20,z37
       
-  # def swap(wires, a, b , c,)
-  # for i in range(0, len(s)):
-  #   for j in range(i + 1, len(s)):
-  #     for k in range(j + 1, len(s)):
-  #       for l in range(k + 1, len(s)):
-  #         w = wires.copy()
-          
-          
   
-# def part_two():
-#   wires, operations = parse_input()
-#   x = []
-#   y = []
-#   swappables = []
-#   for key in wires.keys():
-#     if key.startswith('x'):
-#       x.append(key)
-#     elif key.startswith('y'):
-#       y.append(key)
-#     else:
-#       swappables.append(key)
-    
-#   x.sort(reverse=True)
-#   actual_x = binary_to_decimal(''.join([str(wires[k]) for k in x]))
-#   actual_y = binary_to_decimal(''.join([str(wires[k]) for k in y]))
-#   actual_value = actual_x * actual_y
-#   print('Actual Value = ', actual_value)
-#   actual = (bin(actual_value)).split("b")[-1]
-#   print('Actual binary = ', actual)
-  
- 
-  
-#   swapps = find_swaps(wires, operations)
-  
-#   for swapp in swapps: 
-    
   
   
   
